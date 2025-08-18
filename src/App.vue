@@ -34,7 +34,8 @@
             </div>
           </div>
         </div>
-        <div class="header-stats">
+        <!-- 暂时注释掉统计信息 -->
+        <!-- <div class="header-stats">
           <div class="stat-item">
             <span>📁</span>
             <span>{{ linkGroups.length }} 个分组</span>
@@ -43,6 +44,9 @@
             <span>🔗</span>
             <span>{{ totalLinks }} 个链接</span>
           </div>
+        </div> -->
+        
+        <div class="header-stats">
           <!-- <div class="stat-item">
             <button @click="switchBackground" class="bg-switch-btn">
               <span>🖼️</span>
@@ -57,7 +61,9 @@
           </div> -->
           <div class="stat-item">
             <button @click="showDataManager = true" class="bg-switch-btn">
-              <span>💾</span>
+              <svg viewBox="0 0 24 24" width="16" height="16">
+                <path fill="currentColor" d="M4,3H20A1,1 0 0,1 21,4V6A1,1 0 0,1 20,7H4A1,1 0 0,1 3,6V4A1,1 0 0,1 4,3M4,8H20A1,1 0 0,1 21,9V11A1,1 0 0,1 20,12H4A1,1 0 0,1 3,11V9A1,1 0 0,1 4,8M4,13H20A1,1 0 0,1 21,14V16A1,1 0 0,1 20,17H4A1,1 0 0,1 3,16V14A1,1 0 0,1 4,13M4,18H20A1,1 0 0,1 21,19V21A1,1 0 0,1 20,22H4A1,1 0 0,1 3,21V19A1,1 0 0,1 4,18Z"/>
+              </svg>
               <span>数据管理</span>
             </button>
           </div>
