@@ -9,20 +9,286 @@ body {
   background: #f8fafc;
   min-height: 100vh;
   color: #1e293b;
+  position: relative;
+  overflow-x: hidden;
 }
 
 #app {
   min-height: 100vh;
+  position: relative;
+  z-index: 10;
+}
+
+/* 图片背景容器 */
+.background-animation {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  overflow: hidden;
+  background: 
+    linear-gradient(135deg, rgba(102, 126, 234, 0.7) 0%, rgba(118, 75, 162, 0.7) 100%),
+    url('https://images.unsplash.com/photo-1557804506-669a67965ba0?ixlib=rb-4.0.3&auto=format&fit=crop&w=2074&q=80');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  transition: opacity 0.3s ease;
+}
+
+/* 备用背景 */
+.background-animation::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: 
+    linear-gradient(135deg, rgba(102, 126, 234, 0.9) 0%, rgba(118, 75, 162, 0.9) 100%),
+    url('https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80');
+  background-size: cover;
+  background-position: center;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  z-index: -1;
+}
+
+/* 多个背景图片轮换 */
+.background-animation.bg-1 {
+  background-image: 
+    linear-gradient(135deg, rgba(102, 126, 234, 0.7) 0%, rgba(118, 75, 162, 0.7) 100%),
+    url('https://images.unsplash.com/photo-1557804506-669a67965ba0?ixlib=rb-4.0.3&auto=format&fit=crop&w=2074&q=80');
+}
+
+.background-animation.bg-2 {
+  background-image: 
+    linear-gradient(135deg, rgba(72, 202, 228, 0.7) 0%, rgba(118, 75, 162, 0.7) 100%),
+    url('https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80');
+}
+
+.background-animation.bg-3 {
+  background-image: 
+    linear-gradient(135deg, rgba(255, 107, 107, 0.6) 0%, rgba(254, 202, 87, 0.6) 100%),
+    url('https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80');
+}
+
+/* 浮动几何图形 */
+.floating-shapes {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+}
+
+.shape {
+  position: absolute;
+  opacity: 0.05;
+  animation: float 25s infinite linear;
+}
+
+.shape-1 {
+  width: 80px;
+  height: 80px;
+  background: linear-gradient(45deg, #ff6b6b, #feca57);
+  border-radius: 50%;
+  top: 10%;
+  left: 10%;
+  animation-delay: 0s;
+}
+
+.shape-2 {
+  width: 60px;
+  height: 60px;
+  background: linear-gradient(45deg, #48cae4, #0077b6);
+  border-radius: 20px;
+  top: 20%;
+  right: 15%;
+  animation-delay: -5s;
+  animation-duration: 25s;
+}
+
+.shape-3 {
+  width: 100px;
+  height: 100px;
+  background: linear-gradient(45deg, #06ffa5, #00d4aa);
+  clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+  top: 60%;
+  left: 20%;
+  animation-delay: -10s;
+  animation-duration: 30s;
+}
+
+.shape-4 {
+  width: 70px;
+  height: 70px;
+  background: linear-gradient(45deg, #f093fb, #f5576c);
+  border-radius: 50%;
+  top: 70%;
+  right: 25%;
+  animation-delay: -15s;
+  animation-duration: 22s;
+}
+
+.shape-5 {
+  width: 90px;
+  height: 90px;
+  background: linear-gradient(45deg, #4facfe, #00f2fe);
+  border-radius: 15px;
+  top: 30%;
+  left: 70%;
+  animation-delay: -8s;
+  animation-duration: 28s;
+}
+
+.shape-6 {
+  width: 50px;
+  height: 50px;
+  background: linear-gradient(45deg, #a8edea, #fed6e3);
+  clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
+  top: 80%;
+  left: 60%;
+  animation-delay: -12s;
+  animation-duration: 35s;
+}
+
+/* 浮动动画 */
+@keyframes float {
+  0% {
+    transform: translateY(100vh) rotate(0deg);
+  }
+  100% {
+    transform: translateY(-100px) rotate(360deg);
+  }
+}
+
+/* 渐变波浪背景 */
+.wave-background {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 200px;
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+  clip-path: polygon(0 20%, 100% 0%, 100% 100%, 0% 100%);
+  animation: waveMove 15s ease-in-out infinite;
+}
+
+@keyframes waveMove {
+  0%, 100% {
+    clip-path: polygon(0 20%, 100% 0%, 100% 100%, 0% 100%);
+  }
+  50% {
+    clip-path: polygon(0 0%, 100% 20%, 100% 100%, 0% 100%);
+  }
+}
+
+/* 粒子效果 */
+.particles {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+}
+
+.particle {
+  position: absolute;
+  width: 3px;
+  height: 3px;
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  animation: particleFloat 20s infinite linear;
+}
+
+.particle:nth-child(1) { left: 10%; animation-delay: 0s; }
+.particle:nth-child(2) { left: 20%; animation-delay: -2s; }
+.particle:nth-child(3) { left: 30%; animation-delay: -4s; }
+.particle:nth-child(4) { left: 40%; animation-delay: -6s; }
+.particle:nth-child(5) { left: 50%; animation-delay: -8s; }
+.particle:nth-child(6) { left: 60%; animation-delay: -10s; }
+.particle:nth-child(7) { left: 70%; animation-delay: -12s; }
+.particle:nth-child(8) { left: 80%; animation-delay: -14s; }
+.particle:nth-child(9) { left: 90%; animation-delay: -16s; }
+
+@keyframes particleFloat {
+  0% {
+    transform: translateY(100vh) scale(0);
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  90% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-100px) scale(1);
+    opacity: 0;
+  }
+}
+
+/* 光晕效果 */
+.glow-orbs {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+}
+
+.orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(1px);
+  animation: orbFloat 20s infinite ease-in-out;
+}
+
+.orb-1 {
+  width: 200px;
+  height: 200px;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+  top: 10%;
+  left: -10%;
+  animation-delay: 0s;
+}
+
+.orb-2 {
+  width: 300px;
+  height: 300px;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.08) 0%, transparent 70%);
+  top: 50%;
+  right: -15%;
+  animation-delay: -10s;
+}
+
+.orb-3 {
+  width: 150px;
+  height: 150px;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.12) 0%, transparent 70%);
+  bottom: 20%;
+  left: 30%;
+  animation-delay: -5s;
+}
+
+@keyframes orbFloat {
+  0%, 100% {
+    transform: translate(0, 0) scale(1);
+  }
+  33% {
+    transform: translate(30px, -30px) scale(1.1);
+  }
+  66% {
+    transform: translate(-20px, 20px) scale(0.9);
+  }
 }
 
 .header {
-  background: white;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
   box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
   padding: 1.5rem 0;
   margin-bottom: 2rem;
   position: sticky;
   top: 0;
   z-index: 100;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .header .container {
@@ -80,9 +346,10 @@ body {
 }
 
 .add-group-card {
-  background: white;
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(10px);
   border-radius: 12px;
-  border: 2px dashed #e2e8f0;
+  border: 2px dashed rgba(255, 255, 255, 0.4);
   padding: 2rem;
   display: flex;
   align-items: center;
@@ -90,11 +357,14 @@ body {
   min-height: 180px;
   transition: all 0.3s ease;
   cursor: pointer;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
 }
 
 .add-group-card:hover {
-  border-color: #3b82f6;
-  background: #f8fafc;
+  background: rgba(255, 255, 255, 0.95);
+  border-color: rgba(59, 130, 246, 0.6);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
 }
 
 .add-group-btn {
@@ -136,18 +406,61 @@ body {
   font-weight: bold;
 }
 
+/* 性能优化 */
+.background-animation * {
+  will-change: transform;
+}
+
 /* 响应式设计 */
 @media (max-width: 768px) {
-  .container {
+  .main .container {
     grid-template-columns: 1fr;
     gap: 1rem;
   }
   
   .title {
-    font-size: 2rem;
+    font-size: 1.25rem;
   }
   
   .main {
-    padding: 1rem;
+    padding: 0 1rem 2rem;
+  }
+  
+  .header .container {
+    padding: 0 1rem;
+    flex-direction: column;
+    gap: 0.5rem;
+    text-align: center;
+  }
+  
+  .header-stats {
+    justify-content: center;
+  }
+  
+  /* 移动端优化背景 */
+  .background-animation {
+    background-attachment: scroll;
+  }
+  
+  /* 移动端减少动画元素 */
+  .shape-3, .shape-5, .shape-6 {
+    display: none;
+  }
+  
+  .particle:nth-child(n+6) {
+    display: none;
+  }
+  
+  .orb-2, .orb-3 {
+    display: none;
+  }
+}
+
+/* 减少动画偏好设置 */
+@media (prefers-reduced-motion: reduce) {
+  .background-animation * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
   }
 }

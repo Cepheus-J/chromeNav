@@ -1,5 +1,40 @@
 <template>
   <div id="app">
+    <!-- 背景动画 -->
+    <div class="background-animation bg-1">
+      <!-- 浮动几何图形 -->
+      <div class="floating-shapes">
+        <div class="shape shape-1"></div>
+        <div class="shape shape-2"></div>
+        <div class="shape shape-3"></div>
+        <div class="shape shape-4"></div>
+        <div class="shape shape-5"></div>
+        <div class="shape shape-6"></div>
+      </div>
+      
+      <!-- 粒子效果 -->
+      <div class="particles">
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+      </div>
+      
+      <!-- 光晕效果 -->
+      <div class="glow-orbs">
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+        <div class="orb orb-3"></div>
+      </div>
+      
+      <!-- 波浪背景 -->
+      <div class="wave-background"></div>
+    </div>
     <header class="header">
       <div class="container">
         <div class="header-info">
