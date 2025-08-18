@@ -43,7 +43,7 @@
             <span>🔗</span>
             <span>{{ totalLinks }} 个链接</span>
           </div>
-          <div class="stat-item">
+          <!-- <div class="stat-item">
             <button @click="switchBackground" class="bg-switch-btn">
               <span>🖼️</span>
               <span>切换背景</span>
@@ -53,6 +53,12 @@
             <button @click="switchDisplayMode" class="bg-switch-btn">
               <span>📐</span>
               <span>{{ displayModeText }}</span>
+            </button>
+          </div> -->
+          <div class="stat-item">
+            <button @click="showDataManager = true" class="bg-switch-btn">
+              <span>💾</span>
+              <span>数据管理</span>
             </button>
           </div>
         </div>
@@ -107,6 +113,15 @@
         @cancel="cancelLinkEdit"
       />
     </Modal>
+
+    <!-- 数据管理模态框 -->
+    <Modal v-if="showDataManager" @close="showDataManager = false">
+      <DataManager 
+        :linkGroups="linkGroups"
+        @import="importData"
+        @close="showDataManager = false"
+      />
+    </Modal>
   </div>
 </template>
 
@@ -115,6 +130,7 @@ import NavGroup from './components/NavGroup.vue'
 import Modal from './components/Modal.vue'
 import GroupForm from './components/GroupForm.vue'
 import LinkForm from './components/LinkForm.vue'
+import DataManager from './components/DataManager.vue'
 
 export default {
   name: 'App',
@@ -122,7 +138,8 @@ export default {
     NavGroup,
     Modal,
     GroupForm,
-    LinkForm
+    LinkForm,
+    DataManager
   },
   data() {
     return {
@@ -150,6 +167,7 @@ export default {
       showAddGroupModal: false,
       showEditGroupModal: false,
       showLinkModal: false,
+      showDataManager: false,
       editingGroup: null,
       editingLink: null,
       editingGroupId: null,
@@ -303,6 +321,35 @@ export default {
       const nextIndex = (currentIndex + 1) % modes.length
       this.displayMode = modes[nextIndex]
       this.saveData()
+    },
+    
+    importData(importedData) {
+      try {
+        if (importedData.linkGroups && Array.isArray(importedData.linkGroups)) {
+          // 更新ID以避免冲突
+          importedData.linkGroups.forEach(group => {
+            const originalGroupId = group.id
+            group.id = this.nextGroupId++
+            
+            if (group.links && Array.isArray(group.links)) {
+              group.links.forEach(link => {
+                link.id = this.nextLinkId++
+              })
+            }
+          })
+          
+          // 添加到现有分组
+          this.linkGroups = [...this.linkGroups, ...importedData.linkGroups]
+          this.saveData()
+          this.showDataManager = false
+          
+          alert(`成功导入 ${importedData.linkGroups.length} 个分组！`)
+        } else {
+          throw new Error('导入数据格式不正确')
+        }
+      } catch (error) {
+        alert('导入失败：' + error.message)
+      }
     }
   }
 }
