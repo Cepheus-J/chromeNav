@@ -76,14 +76,27 @@ export default {
     }
   },
   
-  mounted() {
-    if (this.group) {
-      this.formData = {
-        name: this.group.name || '',
-        description: this.group.description || ''
+  watch: {
+    group: {
+      immediate: true,
+      handler(newGroup) {
+        if (newGroup) {
+          this.formData = {
+            name: newGroup.name || '',
+            description: newGroup.description || ''
+          }
+        } else {
+          // 重置表单数据
+          this.formData = {
+            name: '',
+            description: ''
+          }
+        }
       }
     }
-    
+  },
+
+  mounted() {
     // 自动聚焦到第一个输入框
     this.$nextTick(() => {
       const firstInput = this.$el.querySelector('input')

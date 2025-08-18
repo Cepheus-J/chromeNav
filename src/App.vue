@@ -11,92 +11,75 @@
         <div class="particle"></div>
       </div>
     </div>
-    <header class="header">
+    
+    <!-- 现代化顶部功能区 -->
+    <header class="modern-header">
       <div class="container">
-        <div class="header-info">
-          <div class="brand-logo">
-            <svg class="logo-icon" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <circle cx="20" cy="20" r="18" fill="url(#logoGradient)" stroke="rgba(255,255,255,0.3)" stroke-width="2"/>
-              <path d="M12 16L20 24L28 16" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
-              <circle cx="20" cy="12" r="2" fill="white"/>
-              <circle cx="14" cy="28" r="1.5" fill="white" opacity="0.8"/>
-              <circle cx="26" cy="28" r="1.5" fill="white" opacity="0.8"/>
-              <defs>
-                <linearGradient id="logoGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" style="stop-color:#667eea;stop-opacity:1" />
-                  <stop offset="100%" style="stop-color:#764ba2;stop-opacity:1" />
-                </linearGradient>
-              </defs>
-            </svg>
-            <div class="brand-text">
-              <h1 class="title">NavHub</h1>
-              <p class="subtitle">智能导航中心</p>
-            </div>
-          </div>
+        <!-- 左侧时间和日期 -->
+        <div class="time-section">
+          <div class="current-time">{{ currentTime }}</div>
+          <div class="current-date">{{ currentDate }}</div>
         </div>
-        <!-- 暂时注释掉统计信息 -->
-        <!-- <div class="header-stats">
-          <div class="stat-item">
-            <span>📁</span>
-            <span>{{ linkGroups.length }} 个分组</span>
-          </div>
-          <div class="stat-item">
-            <span>🔗</span>
-            <span>{{ totalLinks }} 个链接</span>
-          </div>
-        </div> -->
         
-        <div class="header-stats">
-          <!-- <div class="stat-item">
-            <button @click="switchBackground" class="bg-switch-btn">
-              <span>🖼️</span>
-              <span>切换背景</span>
-            </button>
-          </div>
-          <div class="stat-item">
-            <button @click="switchDisplayMode" class="bg-switch-btn">
-              <span>📐</span>
-              <span>{{ displayModeText }}</span>
-            </button>
-          </div> -->
-          <div class="stat-item">
-            <button @click="showDataManager = true" class="bg-switch-btn">
+        <!-- 右侧搜索区域 -->
+        <div class="search-section">
+          <div class="search-container">
+            <svg class="search-icon" viewBox="0 0 24 24" width="18" height="18">
+              <path fill="currentColor" d="M9.5,3A6.5,6.5 0 0,1 16,9.5C16,11.11 15.41,12.59 14.44,13.73L14.71,14H15.5L20.5,19L19,20.5L14,15.5V14.71L13.73,14.44C12.59,15.41 11.11,16 9.5,16A6.5,6.5 0 0,1 3,9.5A6.5,6.5 0 0,1 9.5,3M9.5,5C7,5 5,7 5,9.5C5,12 7,14 9.5,14C12,14 14,12 14,9.5C14,7 12,5 9.5,5Z"/>
+            </svg>
+            <input 
+              v-model="searchQuery" 
+              type="text" 
+              placeholder="搜索... (Ctrl+, 打开数据管理)" 
+              class="search-input"
+              @input="handleSearch"
+              @keydown="handleKeydown"
+            />
+            <button @click="showDataManager = true" class="search-settings-btn" title="数据管理">
               <svg viewBox="0 0 24 24" width="16" height="16">
                 <path fill="currentColor" d="M4,3H20A1,1 0 0,1 21,4V6A1,1 0 0,1 20,7H4A1,1 0 0,1 3,6V4A1,1 0 0,1 4,3M4,8H20A1,1 0 0,1 21,9V11A1,1 0 0,1 20,12H4A1,1 0 0,1 3,11V9A1,1 0 0,1 4,8M4,13H20A1,1 0 0,1 21,14V16A1,1 0 0,1 20,17H4A1,1 0 0,1 3,16V14A1,1 0 0,1 4,13M4,18H20A1,1 0 0,1 21,19V21A1,1 0 0,1 20,22H4A1,1 0 0,1 3,21V19A1,1 0 0,1 4,18Z"/>
               </svg>
-              <span>数据管理</span>
             </button>
           </div>
         </div>
       </div>
     </header>
-    
-    <main class="main">
+
+
+
+
+
+
+
+    <!-- 应用程序区域 -->
+    <div class="apps-section">
       <div class="container">
-        <NavGroup 
-          v-for="group in linkGroups" 
-          :key="group.id"
-          :group="group"
-          @edit-group="editGroup"
-          @delete-group="deleteGroup"
-          @add-link="addLink"
-          @edit-link="editLink"
-          @delete-link="deleteLink"
-        />
-        
-        <div class="add-group-card" @click="showAddGroupModal = true">
-          <button class="add-group-btn">
-            <div class="add-icon">+</div>
-            <span>添加新分组</span>
-          </button>
+        <div class="apps-grid">
+          <NavGroup 
+            v-for="group in filteredLinkGroups" 
+            :key="group.id"
+            :group="group"
+            @edit-group="editGroup"
+            @delete-group="deleteGroup"
+            @add-link="addLink"
+            @edit-link="editLink"
+            @delete-link="deleteLink"
+          />
+          
+          <div class="add-group-card" @click="addNewGroup">
+            <button class="add-group-btn">
+              <div class="add-icon">+</div>
+              <span>添加新分组</span>
+            </button>
+          </div>
         </div>
       </div>
-    </main>
+    </div>
 
     <!-- 添加分组模态框 -->
-    <Modal v-if="showAddGroupModal" @close="showAddGroupModal = false">
+    <Modal v-if="showAddGroupModal" @close="cancelGroupEdit">
       <GroupForm 
-        :group="editingGroup"
+        :group="null"
         @save="saveGroup"
         @cancel="cancelGroupEdit"
       />
@@ -185,7 +168,10 @@ export default {
       nextGroupId: 3,
       nextLinkId: 6,
       currentBackground: 'bg-1',
-      displayMode: 'mode-cover'
+      displayMode: 'mode-cover',
+      searchQuery: '',
+      currentTime: '',
+      currentDate: ''
     }
   },
   computed: {
@@ -199,13 +185,34 @@ export default {
         'mode-fit': '拉伸适应'
       }
       return modes[this.displayMode] || '完整显示'
+    },
+    filteredLinkGroups() {
+      if (!this.searchQuery) {
+        return this.linkGroups
+      }
+      const query = this.searchQuery.toLowerCase()
+      return this.linkGroups.map(group => ({
+        ...group,
+        links: group.links.filter(link =>
+          link.name.toLowerCase().includes(query) ||
+          link.url.toLowerCase().includes(query) ||
+          link.description.toLowerCase().includes(query)
+        )
+      })).filter(group => group.links.length > 0)
     }
   },
   mounted() {
     this.loadData()
+    this.updateTime()
+    setInterval(this.updateTime, 1000)
   },
   methods: {
     // 分组相关方法
+    addNewGroup() {
+      this.editingGroup = null
+      this.showAddGroupModal = true
+    },
+
     editGroup(group) {
       this.editingGroup = { ...group }
       this.showEditGroupModal = true
@@ -360,6 +367,33 @@ export default {
         }
       } catch (error) {
         alert('导入失败：' + error.message)
+      }
+    },
+
+    updateTime() {
+      const now = new Date()
+      this.currentTime = now.toLocaleTimeString()
+      this.currentDate = now.toLocaleDateString()
+    },
+
+    handleSearch() {
+      // 这里可以添加搜索逻辑，例如实时过滤 linkGroups
+      // 例如：this.filteredLinkGroups = this.linkGroups.filter(group => {
+      //   const groupMatches = group.name.toLowerCase().includes(this.searchQuery.toLowerCase())
+      //   if (groupMatches) return true
+      //   return group.links.some(link => 
+      //     link.name.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
+      //     link.url.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
+      //     link.description.toLowerCase().includes(this.searchQuery.toLowerCase())
+      //   )
+      // })
+    },
+
+    handleKeydown(event) {
+      // Ctrl+, 打开数据管理
+      if (event.ctrlKey && event.key === ',') {
+        event.preventDefault()
+        this.showDataManager = true
       }
     }
   }
