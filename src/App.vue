@@ -1,39 +1,15 @@
 <template>
   <div id="app">
-    <!-- 背景动画 -->
-    <div class="background-animation bg-1">
-      <!-- 浮动几何图形 -->
-      <div class="floating-shapes">
-        <div class="shape shape-1"></div>
-        <div class="shape shape-2"></div>
-        <div class="shape shape-3"></div>
-        <div class="shape shape-4"></div>
-        <div class="shape shape-5"></div>
-        <div class="shape shape-6"></div>
-      </div>
-      
-      <!-- 粒子效果 -->
+    <!-- 全屏风景背景 -->
+    <div :class="`background-animation ${currentBackground} ${displayMode}`">
+      <!-- 轻微粒子效果 -->
       <div class="particles">
         <div class="particle"></div>
         <div class="particle"></div>
         <div class="particle"></div>
         <div class="particle"></div>
         <div class="particle"></div>
-        <div class="particle"></div>
-        <div class="particle"></div>
-        <div class="particle"></div>
-        <div class="particle"></div>
       </div>
-      
-      <!-- 光晕效果 -->
-      <div class="glow-orbs">
-        <div class="orb orb-1"></div>
-        <div class="orb orb-2"></div>
-        <div class="orb orb-3"></div>
-      </div>
-      
-      <!-- 波浪背景 -->
-      <div class="wave-background"></div>
     </div>
     <header class="header">
       <div class="container">
@@ -49,6 +25,18 @@
           <div class="stat-item">
             <span>🔗</span>
             <span>{{ totalLinks }} 个链接</span>
+          </div>
+          <div class="stat-item">
+            <button @click="switchBackground" class="bg-switch-btn">
+              <span>🖼️</span>
+              <span>切换背景</span>
+            </button>
+          </div>
+          <div class="stat-item">
+            <button @click="switchDisplayMode" class="bg-switch-btn">
+              <span>📐</span>
+              <span>{{ displayModeText }}</span>
+            </button>
           </div>
         </div>
       </div>
@@ -149,12 +137,22 @@ export default {
       editingLink: null,
       editingGroupId: null,
       nextGroupId: 3,
-      nextLinkId: 6
+      nextLinkId: 6,
+      currentBackground: 'bg-1',
+      displayMode: 'mode-cover'
     }
   },
   computed: {
     totalLinks() {
       return this.linkGroups.reduce((total, group) => total + group.links.length, 0)
+    },
+    displayModeText() {
+      const modes = {
+        'mode-contain': '完整显示',
+        'mode-cover': '填满屏幕',
+        'mode-fit': '拉伸适应'
+      }
+      return modes[this.displayMode] || '完整显示'
     }
   },
   mounted() {
@@ -256,7 +254,9 @@ export default {
       localStorage.setItem('navData', JSON.stringify({
         linkGroups: this.linkGroups,
         nextGroupId: this.nextGroupId,
-        nextLinkId: this.nextLinkId
+        nextLinkId: this.nextLinkId,
+        currentBackground: this.currentBackground,
+        displayMode: this.displayMode
       }))
     },
     
@@ -267,7 +267,25 @@ export default {
         this.linkGroups = data.linkGroups || this.linkGroups
         this.nextGroupId = data.nextGroupId || this.nextGroupId
         this.nextLinkId = data.nextLinkId || this.nextLinkId
+        this.currentBackground = data.currentBackground || this.currentBackground
+        this.displayMode = data.displayMode || this.displayMode
       }
+    },
+    
+    switchBackground() {
+      const backgrounds = ['bg-1', 'bg-2', 'bg-3']
+      const currentIndex = backgrounds.indexOf(this.currentBackground)
+      const nextIndex = (currentIndex + 1) % backgrounds.length
+      this.currentBackground = backgrounds[nextIndex]
+      this.saveData()
+    },
+    
+    switchDisplayMode() {
+      const modes = ['mode-contain', 'mode-cover', 'mode-fit']
+      const currentIndex = modes.indexOf(this.displayMode)
+      const nextIndex = (currentIndex + 1) % modes.length
+      this.displayMode = modes[nextIndex]
+      this.saveData()
     }
   }
 }

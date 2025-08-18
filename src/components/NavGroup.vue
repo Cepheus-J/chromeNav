@@ -87,20 +87,20 @@ export default {
 
 <style scoped>
 .nav-group {
-  background: rgba(255, 255, 255, 0.9);
-  backdrop-filter: blur(10px);
-  border-radius: 12px;
-  border: 1px solid rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(20px);
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
   padding: 1.5rem;
   transition: all 0.3s ease;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
 }
 
 .nav-group:hover {
-  background: rgba(255, 255, 255, 0.95);
-  border-color: rgba(255, 255, 255, 0.4);
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-  transform: translateY(-2px);
+  background: rgba(255, 255, 255, 0.25);
+  border-color: rgba(255, 255, 255, 0.3);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+  transform: translateY(-4px);
 }
 
 .group-header {
@@ -109,7 +109,7 @@ export default {
   align-items: flex-start;
   margin-bottom: 1rem;
   padding-bottom: 0.75rem;
-  border-bottom: 1px solid #f1f5f9;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .group-info {
@@ -117,16 +117,18 @@ export default {
 }
 
 .group-title {
-  color: #0f172a;
+  color: white;
   font-size: 1.1rem;
   font-weight: 600;
   margin-bottom: 0.25rem;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
 }
 
 .group-description {
-  color: #64748b;
+  color: rgba(255, 255, 255, 0.8);
   font-size: 0.875rem;
   line-height: 1.4;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
 }
 
 .group-actions {
@@ -135,8 +137,8 @@ export default {
 }
 
 .action-btn {
-  background: #f8fafc;
-  border: 1px solid #e2e8f0;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: 6px;
   padding: 0.375rem;
   cursor: pointer;
@@ -146,23 +148,24 @@ export default {
   justify-content: center;
   width: 28px;
   height: 28px;
+  color: rgba(255, 255, 255, 0.8);
 }
 
 .action-btn:hover {
-  background: #f1f5f9;
-  border-color: #cbd5e1;
+  background: rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.3);
 }
 
 .edit-btn:hover {
-  background: #dbeafe;
-  border-color: #93c5fd;
-  color: #3b82f6;
+  background: rgba(59, 130, 246, 0.3);
+  border-color: rgba(59, 130, 246, 0.5);
+  color: #93c5fd;
 }
 
 .delete-btn:hover {
-  background: #fef2f2;
-  border-color: #fca5a5;
-  color: #ef4444;
+  background: rgba(239, 68, 68, 0.3);
+  border-color: rgba(239, 68, 68, 0.5);
+  color: #fca5a5;
 }
 
 .icon {
@@ -175,9 +178,9 @@ export default {
 }
 
 .link-item {
-  background: #f8fafc;
+  background: rgba(255, 255, 255, 0.1);
   border-radius: 8px;
-  border: 1px solid #f1f5f9;
+  border: 1px solid rgba(255, 255, 255, 0.15);
   transition: all 0.2s ease;
   display: flex;
   align-items: center;
@@ -185,9 +188,9 @@ export default {
 }
 
 .link-item:hover {
-  background: white;
-  border-color: #e2e8f0;
-  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+  background: rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.25);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 .link-content {
@@ -196,7 +199,7 @@ export default {
   align-items: center;
   padding: 0.75rem;
   text-decoration: none;
-  color: #1e293b;
+  color: white;
 }
 
 .link-icon {
@@ -205,8 +208,8 @@ export default {
   margin-right: 0.75rem;
   border-radius: 8px;
   overflow: hidden;
-  background: white;
-  border: 1px solid #e2e8f0;
+  background: rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.3);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -226,13 +229,15 @@ export default {
   font-size: 0.9rem;
   font-weight: 500;
   margin-bottom: 0.125rem;
-  color: #0f172a;
+  color: white;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
 }
 
 .link-description {
   font-size: 0.75rem;
-  color: #64748b;
+  color: rgba(255, 255, 255, 0.7);
   line-height: 1.3;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
 }
 
 .link-actions {
@@ -242,23 +247,23 @@ export default {
 }
 
 .add-link-item {
-  border: 1px dashed #cbd5e1;
+  border: 1px dashed rgba(255, 255, 255, 0.3);
   border-radius: 8px;
   padding: 0.75rem;
   text-align: center;
-  background: #fafbfc;
+  background: rgba(255, 255, 255, 0.05);
   transition: all 0.2s ease;
 }
 
 .add-link-item:hover {
-  border-color: #3b82f6;
-  background: #f8fafc;
+  border-color: rgba(255, 255, 255, 0.5);
+  background: rgba(255, 255, 255, 0.1);
 }
 
 .add-link-btn {
   background: none;
   border: none;
-  color: #64748b;
+  color: rgba(255, 255, 255, 0.7);
   font-size: 0.8rem;
   cursor: pointer;
   transition: all 0.2s ease;
@@ -268,10 +273,11 @@ export default {
   gap: 0.5rem;
   width: 100%;
   padding: 0.5rem;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
 }
 
 .add-link-item:hover .add-link-btn {
-  color: #3b82f6;
+  color: white;
 }
 
 .plus-icon {

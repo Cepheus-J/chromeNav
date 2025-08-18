@@ -19,7 +19,7 @@ body {
   z-index: 10;
 }
 
-/* 图片背景容器 */
+/* 全屏风景背景 */
 .background-animation {
   position: fixed;
   top: 0;
@@ -29,49 +29,53 @@ body {
   z-index: -1;
   overflow: hidden;
   background: 
-    linear-gradient(135deg, rgba(102, 126, 234, 0.7) 0%, rgba(118, 75, 162, 0.7) 100%),
-    url('https://images.unsplash.com/photo-1557804506-669a67965ba0?ixlib=rb-4.0.3&auto=format&fit=crop&w=2074&q=80');
-  background-size: cover;
-  background-position: center;
-  background-attachment: fixed;
-  transition: opacity 0.3s ease;
-}
-
-/* 备用背景 */
-.background-animation::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: 
-    linear-gradient(135deg, rgba(102, 126, 234, 0.9) 0%, rgba(118, 75, 162, 0.9) 100%),
+    linear-gradient(135deg, rgba(0, 0, 0, 0.3) 0%, rgba(0, 0, 0, 0.1) 100%),
     url('https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80');
   background-size: cover;
   background-position: center;
-  opacity: 0;
-  transition: opacity 0.3s ease;
-  z-index: -1;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
 }
 
-/* 多个背景图片轮换 */
+/* 多个在线风景背景选择 */
 .background-animation.bg-1 {
   background-image: 
-    linear-gradient(135deg, rgba(102, 126, 234, 0.7) 0%, rgba(118, 75, 162, 0.7) 100%),
-    url('https://images.unsplash.com/photo-1557804506-669a67965ba0?ixlib=rb-4.0.3&auto=format&fit=crop&w=2074&q=80');
+    linear-gradient(135deg, rgba(0, 0, 0, 0.2) 0%, rgba(0, 0, 0, 0.1) 100%),
+    url('https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80');
 }
 
 .background-animation.bg-2 {
   background-image: 
-    linear-gradient(135deg, rgba(72, 202, 228, 0.7) 0%, rgba(118, 75, 162, 0.7) 100%),
-    url('https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80');
+    linear-gradient(135deg, rgba(0, 0, 0, 0.2) 0%, rgba(0, 0, 0, 0.1) 100%),
+    url('https://images.unsplash.com/photo-1441974231531-c6227db76b6e?ixlib=rb-4.0.3&auto=format&fit=crop&w=2071&q=80');
 }
 
 .background-animation.bg-3 {
   background-image: 
-    linear-gradient(135deg, rgba(255, 107, 107, 0.6) 0%, rgba(254, 202, 87, 0.6) 100%),
-    url('https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80');
+    linear-gradient(135deg, rgba(0, 0, 0, 0.2) 0%, rgba(0, 0, 0, 0.1) 100%),
+    url('https://images.unsplash.com/photo-1469474968028-56623f02e42e?ixlib=rb-4.0.3&auto=format&fit=crop&w=2074&q=80');
+}
+
+/* 背景显示模式 */
+.background-animation.mode-contain {
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-color: #1a1a1a;
+}
+
+.background-animation.mode-cover {
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
+.background-animation.mode-fit {
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+}
+
+/* 备用渐变背景（如果图片加载失败） */
+.background-animation.fallback {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
 }
 
 /* 浮动几何图形 */
@@ -280,15 +284,14 @@ body {
 }
 
 .header {
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(10px);
-  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
-  padding: 1.5rem 0;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 1rem 0;
   margin-bottom: 2rem;
   position: sticky;
   top: 0;
   z-index: 100;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .header .container {
@@ -303,14 +306,16 @@ body {
 .title {
   font-size: 1.5rem;
   font-weight: 700;
-  color: #0f172a;
+  color: white;
   margin: 0;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
 .subtitle {
   font-size: 0.875rem;
-  color: #64748b;
+  color: rgba(255, 255, 255, 0.9);
   margin: 0;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
 }
 
 .header-info {
@@ -324,13 +329,36 @@ body {
   align-items: center;
   gap: 1rem;
   font-size: 0.875rem;
-  color: #64748b;
+  color: rgba(255, 255, 255, 0.8);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
 }
 
 .stat-item {
   display: flex;
   align-items: center;
   gap: 0.5rem;
+}
+
+.bg-switch-btn {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 6px;
+  padding: 0.5rem 0.75rem;
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 0.75rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.bg-switch-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.3);
+  color: white;
+  transform: translateY(-1px);
 }
 
 .main {
@@ -346,10 +374,10 @@ body {
 }
 
 .add-group-card {
-  background: rgba(255, 255, 255, 0.8);
-  backdrop-filter: blur(10px);
-  border-radius: 12px;
-  border: 2px dashed rgba(255, 255, 255, 0.4);
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(20px);
+  border-radius: 16px;
+  border: 2px dashed rgba(255, 255, 255, 0.3);
   padding: 2rem;
   display: flex;
   align-items: center;
@@ -357,20 +385,20 @@ body {
   min-height: 180px;
   transition: all 0.3s ease;
   cursor: pointer;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
 }
 
 .add-group-card:hover {
-  background: rgba(255, 255, 255, 0.95);
-  border-color: rgba(59, 130, 246, 0.6);
-  transform: translateY(-2px);
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  background: rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.5);
+  transform: translateY(-4px);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
 }
 
 .add-group-btn {
   background: none;
   border: none;
-  color: #64748b;
+  color: rgba(255, 255, 255, 0.7);
   font-size: 0.9rem;
   cursor: pointer;
   transition: all 0.3s ease;
@@ -378,27 +406,30 @@ body {
   flex-direction: column;
   align-items: center;
   gap: 0.75rem;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
 }
 
 .add-group-card:hover .add-group-btn {
-  color: #3b82f6;
+  color: white;
 }
 
 .add-icon {
   width: 48px;
   height: 48px;
   border-radius: 50%;
-  background: #f1f5f9;
+  background: rgba(255, 255, 255, 0.1);
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 1.5rem;
   transition: all 0.3s ease;
+  border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .add-group-card:hover .add-icon {
-  background: #dbeafe;
-  color: #3b82f6;
+  background: rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.3);
+  color: white;
 }
 
 .plus-icon {
