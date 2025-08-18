@@ -115,7 +115,12 @@
     </Modal>
 
     <!-- 数据管理模态框 -->
-    <Modal v-if="showDataManager" @close="showDataManager = false">
+    <Modal 
+      v-if="showDataManager" 
+      title="数据管理"
+      width="1200px"
+      @close="showDataManager = false"
+    >
       <DataManager 
         :linkGroups="linkGroups"
         @import="importData"

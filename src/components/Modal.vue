@@ -1,10 +1,28 @@
 <template>
   <div class="modal-overlay" @click="$emit('close')">
-    <div class="modal-content" @click.stop>
-      <button class="close-btn" @click="$emit('close')">
-        <span class="close-icon">×</span>
-      </button>
-      <slot></slot>
+    <div 
+      class="modal-content" 
+      :style="{ width: width || '540px', maxWidth: width ? 'none' : '540px' }"
+      @click.stop
+    >
+      <div v-if="title" class="modal-header">
+        <h3 class="modal-title">{{ title }}</h3>
+        <button class="close-btn" @click="$emit('close')">
+          <svg viewBox="0 0 24 24" width="20" height="20">
+            <path fill="currentColor" d="M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z"/>
+          </svg>
+        </button>
+      </div>
+      <div v-else class="modal-content-no-header">
+        <button class="close-btn" @click="$emit('close')">
+          <svg viewBox="0 0 24 24" width="20" height="20">
+            <path fill="currentColor" d="M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z"/>
+          </svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <slot></slot>
+      </div>
     </div>
   </div>
 </template>
@@ -12,6 +30,16 @@
 <script>
 export default {
   name: 'Modal',
+  props: {
+    title: {
+      type: String,
+      default: ''
+    },
+    width: {
+      type: String,
+      default: '540px'
+    }
+  },
   emits: ['close'],
   mounted() {
     document.body.style.overflow = 'hidden'
@@ -50,56 +78,75 @@ export default {
 }
 
 .modal-content {
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(20px);
+  background: white;
   border-radius: 16px;
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  padding: 2rem;
-  max-width: 500px;
-  width: 100%;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  width: 540px;
+  max-width: 90vw;
   max-height: 90vh;
-  overflow-y: auto;
+  overflow: hidden;
   position: relative;
-  animation: modalSlideIn 0.3s ease-out;
+  display: flex;
+  flex-direction: column;
 }
 
-@keyframes modalSlideIn {
-  from {
-    opacity: 0;
-    transform: translateY(-20px) scale(0.95);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
+/* 移除了动画效果，根据用户要求 */
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem 2rem;
+  border-bottom: 1px solid #e5e7eb;
+  background: #f9fafb;
+}
+
+.modal-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #111827;
+  margin: 0;
+}
+
+.modal-content-no-header {
+  position: relative;
+  height: 0;
+}
+
+.modal-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 0;
 }
 
 .close-btn {
-  position: absolute;
-  top: 1rem;
-  right: 1rem;
   background: none;
   border: none;
-  font-size: 1.5rem;
   cursor: pointer;
-  color: #666;
+  color: #6b7280;
   width: 32px;
   height: 32px;
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 50%;
-  transition: all 0.3s ease;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+
+.modal-content-no-header .close-btn {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  z-index: 10;
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(8px);
 }
 
 .close-btn:hover {
-  background: rgba(0, 0, 0, 0.1);
-  color: #333;
-}
-
-.close-icon {
-  font-size: 24px;
-  line-height: 1;
+  background: #f3f4f6;
+  color: #374151;
 }
 
 @media (max-width: 768px) {
