@@ -30,10 +30,11 @@
             <input 
               v-model="searchQuery" 
               type="text" 
-              placeholder="搜索... (Ctrl+, 打开数据管理)" 
+              placeholder="搜索书签或按回车用百度搜索... (Ctrl+, 打开数据管理)" 
               class="search-input"
               @input="handleSearch"
               @keydown="handleKeydown"
+              @keyup.enter="handleEnterSearch"
             />
             <button @click="showDataManager = true" class="search-settings-btn" title="数据管理">
               <svg viewBox="0 0 24 24" width="16" height="16">
@@ -55,6 +56,24 @@
     <div class="apps-section">
       <div class="container">
         <div class="apps-grid">
+          <!-- 搜索无结果时的提示 -->
+          <div v-if="searchQuery && filteredLinkGroups.length === 0" class="no-results-card">
+            <div class="no-results-content">
+              <svg class="no-results-icon" viewBox="0 0 24 24" width="48" height="48">
+                <path fill="currentColor" d="M15.5,14H20.5L14.5,8H9.5L15.5,14M9.5,3A6.5,6.5 0 0,1 16,9.5C16,11.11 15.41,12.59 14.44,13.73L14.71,14H15.5L20.5,19L19,20.5L14,15.5V14.71L13.73,14.44C12.59,15.41 11.11,16 9.5,16A6.5,6.5 0 0,1 3,9.5A6.5,6.5 0 0,1 9.5,3M9.5,5C7,5 5,7 5,9.5C5,12 7,14 9.5,14C12,14 14,12 14,9.5C14,7 12,5 9.5,5Z"/>
+              </svg>
+              <h3 class="no-results-title">未找到相关书签</h3>
+              <p class="no-results-text">没有找到包含 "{{ searchQuery }}" 的书签</p>
+              <button @click="searchWithBaidu" class="baidu-search-btn">
+                <svg viewBox="0 0 24 24" width="16" height="16">
+                  <path fill="currentColor" d="M21,16V14L13,9V7A3,3 0 0,0 10,4A3,3 0 0,0 7,7V9L2,12V14L7,11V13A3,3 0 0,0 10,16A3,3 0 0,0 13,13V11L21,16Z"/>
+                </svg>
+                使用百度搜索 "{{ searchQuery }}"
+              </button>
+            </div>
+          </div>
+
+          <!-- 正常的分组显示 -->
           <NavGroup 
             v-for="group in filteredLinkGroups" 
             :key="group.id"
@@ -66,7 +85,8 @@
             @delete-link="deleteLink"
           />
           
-          <div class="add-group-card" @click="addNewGroup">
+          <!-- 只在没有搜索或有搜索结果时显示添加分组卡片 -->
+          <div v-if="!searchQuery || filteredLinkGroups.length > 0" class="add-group-card" @click="addNewGroup">
             <button class="add-group-btn">
               <div class="add-icon">+</div>
               <span>添加新分组</span>
@@ -394,6 +414,20 @@ export default {
       if (event.ctrlKey && event.key === ',') {
         event.preventDefault()
         this.showDataManager = true
+      }
+    },
+
+    handleEnterSearch() {
+      // 按回车键时，如果没有搜索结果，自动使用百度搜索
+      if (this.searchQuery && this.filteredLinkGroups.length === 0) {
+        this.searchWithBaidu()
+      }
+    },
+
+    searchWithBaidu() {
+      if (this.searchQuery.trim()) {
+        const searchUrl = `https://www.baidu.com/s?wd=${encodeURIComponent(this.searchQuery.trim())}`
+        window.open(searchUrl, '_blank')
       }
     }
   }
