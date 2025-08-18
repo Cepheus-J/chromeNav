@@ -87,18 +87,19 @@ export default {
 
 <style scoped>
 .nav-group {
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(10px);
-  border-radius: 16px;
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(20px);
+  border-radius: 12px;
+  border: 1px solid rgba(0, 0, 0, 0.05);
   padding: 1.5rem;
   transition: all 0.3s ease;
+  box-shadow: 0 2px 20px rgba(0, 0, 0, 0.08);
 }
 
 .nav-group:hover {
-  background: rgba(255, 255, 255, 0.15);
-  transform: translateY(-2px);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  background: rgba(255, 255, 255, 0.95);
+  transform: translateY(-4px);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
 }
 
 .group-header {
@@ -107,7 +108,7 @@ export default {
   align-items: flex-start;
   margin-bottom: 1.5rem;
   padding-bottom: 1rem;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
 }
 
 .group-info {
@@ -115,14 +116,14 @@ export default {
 }
 
 .group-title {
-  color: white;
-  font-size: 1.3rem;
+  color: #2c3e50;
+  font-size: 1.2rem;
   font-weight: 600;
   margin-bottom: 0.5rem;
 }
 
 .group-description {
-  color: rgba(255, 255, 255, 0.8);
+  color: #7f8c8d;
   font-size: 0.9rem;
 }
 
@@ -132,30 +133,32 @@ export default {
 }
 
 .action-btn {
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 8px;
+  background: rgba(127, 140, 141, 0.1);
+  border: 1px solid rgba(127, 140, 141, 0.2);
+  border-radius: 6px;
   padding: 0.5rem;
   cursor: pointer;
   transition: all 0.3s ease;
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 36px;
-  height: 36px;
+  width: 32px;
+  height: 32px;
 }
 
 .action-btn:hover {
-  background: rgba(255, 255, 255, 0.2);
-  transform: scale(1.1);
+  background: rgba(127, 140, 141, 0.15);
+  transform: scale(1.05);
 }
 
 .edit-btn:hover {
-  background: rgba(52, 152, 219, 0.3);
+  background: rgba(52, 152, 219, 0.15);
+  border-color: rgba(52, 152, 219, 0.3);
 }
 
 .delete-btn:hover {
-  background: rgba(231, 76, 60, 0.3);
+  background: rgba(231, 76, 60, 0.15);
+  border-color: rgba(231, 76, 60, 0.3);
 }
 
 .icon {
@@ -168,9 +171,9 @@ export default {
 }
 
 .link-item {
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 12px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.6);
+  border-radius: 8px;
+  border: 1px solid rgba(0, 0, 0, 0.05);
   transition: all 0.3s ease;
   display: flex;
   align-items: center;
@@ -178,26 +181,27 @@ export default {
 }
 
 .link-item:hover {
-  background: rgba(255, 255, 255, 0.15);
-  transform: translateX(4px);
+  background: rgba(255, 255, 255, 0.8);
+  transform: translateX(2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 .link-content {
   flex: 1;
   display: flex;
   align-items: center;
-  padding: 1rem;
+  padding: 0.75rem;
   text-decoration: none;
-  color: white;
+  color: #2c3e50;
 }
 
 .link-icon {
-  width: 32px;
-  height: 32px;
-  margin-right: 1rem;
-  border-radius: 8px;
+  width: 28px;
+  height: 28px;
+  margin-right: 0.75rem;
+  border-radius: 6px;
   overflow: hidden;
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(127, 140, 141, 0.1);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -214,15 +218,15 @@ export default {
 }
 
 .link-name {
-  font-size: 1rem;
+  font-size: 0.95rem;
   font-weight: 500;
   margin-bottom: 0.25rem;
-  color: white;
+  color: #2c3e50;
 }
 
 .link-description {
-  font-size: 0.85rem;
-  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.8rem;
+  color: #7f8c8d;
   line-height: 1.3;
 }
 
@@ -233,17 +237,17 @@ export default {
 }
 
 .add-link-item {
-  border: 2px dashed rgba(255, 255, 255, 0.3);
-  border-radius: 12px;
-  padding: 1rem;
+  border: 2px dashed rgba(149, 165, 166, 0.3);
+  border-radius: 8px;
+  padding: 0.75rem;
   text-align: center;
 }
 
 .add-link-btn {
   background: none;
   border: none;
-  color: rgba(255, 255, 255, 0.7);
-  font-size: 0.9rem;
+  color: #95a5a6;
+  font-size: 0.85rem;
   cursor: pointer;
   transition: all 0.3s ease;
   display: flex;
@@ -255,7 +259,7 @@ export default {
 }
 
 .add-link-btn:hover {
-  color: white;
+  color: #2c3e50;
 }
 
 .plus-icon {
