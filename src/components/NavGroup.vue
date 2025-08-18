@@ -87,28 +87,26 @@ export default {
 
 <style scoped>
 .nav-group {
-  background: rgba(255, 255, 255, 0.9);
-  backdrop-filter: blur(20px);
+  background: white;
   border-radius: 12px;
-  border: 1px solid rgba(0, 0, 0, 0.05);
+  border: 1px solid #e2e8f0;
   padding: 1.5rem;
   transition: all 0.3s ease;
-  box-shadow: 0 2px 20px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
 }
 
 .nav-group:hover {
-  background: rgba(255, 255, 255, 0.95);
-  transform: translateY(-4px);
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+  border-color: #cbd5e1;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
 }
 
 .group-header {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  margin-bottom: 1.5rem;
-  padding-bottom: 1rem;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+  margin-bottom: 1rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid #f1f5f9;
 }
 
 .group-info {
@@ -116,15 +114,16 @@ export default {
 }
 
 .group-title {
-  color: #2c3e50;
-  font-size: 1.2rem;
+  color: #0f172a;
+  font-size: 1.1rem;
   font-weight: 600;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.25rem;
 }
 
 .group-description {
-  color: #7f8c8d;
-  font-size: 0.9rem;
+  color: #64748b;
+  font-size: 0.875rem;
+  line-height: 1.4;
 }
 
 .group-actions {
@@ -133,32 +132,34 @@ export default {
 }
 
 .action-btn {
-  background: rgba(127, 140, 141, 0.1);
-  border: 1px solid rgba(127, 140, 141, 0.2);
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
   border-radius: 6px;
-  padding: 0.5rem;
+  padding: 0.375rem;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.2s ease;
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 32px;
-  height: 32px;
+  width: 28px;
+  height: 28px;
 }
 
 .action-btn:hover {
-  background: rgba(127, 140, 141, 0.15);
-  transform: scale(1.05);
+  background: #f1f5f9;
+  border-color: #cbd5e1;
 }
 
 .edit-btn:hover {
-  background: rgba(52, 152, 219, 0.15);
-  border-color: rgba(52, 152, 219, 0.3);
+  background: #dbeafe;
+  border-color: #93c5fd;
+  color: #3b82f6;
 }
 
 .delete-btn:hover {
-  background: rgba(231, 76, 60, 0.15);
-  border-color: rgba(231, 76, 60, 0.3);
+  background: #fef2f2;
+  border-color: #fca5a5;
+  color: #ef4444;
 }
 
 .icon {
@@ -167,23 +168,23 @@ export default {
 
 .links-grid {
   display: grid;
-  gap: 1rem;
+  gap: 0.75rem;
 }
 
 .link-item {
-  background: rgba(255, 255, 255, 0.6);
+  background: #f8fafc;
   border-radius: 8px;
-  border: 1px solid rgba(0, 0, 0, 0.05);
-  transition: all 0.3s ease;
+  border: 1px solid #f1f5f9;
+  transition: all 0.2s ease;
   display: flex;
   align-items: center;
   overflow: hidden;
 }
 
 .link-item:hover {
-  background: rgba(255, 255, 255, 0.8);
-  transform: translateX(2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  background: white;
+  border-color: #e2e8f0;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
 }
 
 .link-content {
@@ -192,16 +193,17 @@ export default {
   align-items: center;
   padding: 0.75rem;
   text-decoration: none;
-  color: #2c3e50;
+  color: #1e293b;
 }
 
 .link-icon {
-  width: 28px;
-  height: 28px;
+  width: 32px;
+  height: 32px;
   margin-right: 0.75rem;
-  border-radius: 6px;
+  border-radius: 8px;
   overflow: hidden;
-  background: rgba(127, 140, 141, 0.1);
+  background: white;
+  border: 1px solid #e2e8f0;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -218,15 +220,15 @@ export default {
 }
 
 .link-name {
-  font-size: 0.95rem;
+  font-size: 0.9rem;
   font-weight: 500;
-  margin-bottom: 0.25rem;
-  color: #2c3e50;
+  margin-bottom: 0.125rem;
+  color: #0f172a;
 }
 
 .link-description {
-  font-size: 0.8rem;
-  color: #7f8c8d;
+  font-size: 0.75rem;
+  color: #64748b;
   line-height: 1.3;
 }
 
@@ -237,19 +239,26 @@ export default {
 }
 
 .add-link-item {
-  border: 2px dashed rgba(149, 165, 166, 0.3);
+  border: 1px dashed #cbd5e1;
   border-radius: 8px;
   padding: 0.75rem;
   text-align: center;
+  background: #fafbfc;
+  transition: all 0.2s ease;
+}
+
+.add-link-item:hover {
+  border-color: #3b82f6;
+  background: #f8fafc;
 }
 
 .add-link-btn {
   background: none;
   border: none;
-  color: #95a5a6;
-  font-size: 0.85rem;
+  color: #64748b;
+  font-size: 0.8rem;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.2s ease;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -258,8 +267,8 @@ export default {
   padding: 0.5rem;
 }
 
-.add-link-btn:hover {
-  color: #2c3e50;
+.add-link-item:hover .add-link-btn {
+  color: #3b82f6;
 }
 
 .plus-icon {

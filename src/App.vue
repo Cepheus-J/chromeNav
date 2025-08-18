@@ -1,8 +1,22 @@
 <template>
   <div id="app">
     <header class="header">
-      <h1 class="title">我的导航首页</h1>
-      <p class="subtitle">快速访问常用链接</p>
+      <div class="container">
+        <div class="header-info">
+          <h1 class="title">我的导航首页</h1>
+          <p class="subtitle">快速访问常用链接</p>
+        </div>
+        <div class="header-stats">
+          <div class="stat-item">
+            <span>📁</span>
+            <span>{{ linkGroups.length }} 个分组</span>
+          </div>
+          <div class="stat-item">
+            <span>🔗</span>
+            <span>{{ totalLinks }} 个链接</span>
+          </div>
+        </div>
+      </div>
     </header>
     
     <main class="main">
@@ -18,10 +32,10 @@
           @delete-link="deleteLink"
         />
         
-        <div class="add-group-card">
-          <button @click="showAddGroupModal = true" class="add-group-btn">
-            <span class="plus-icon">+</span>
-            添加新分组
+        <div class="add-group-card" @click="showAddGroupModal = true">
+          <button class="add-group-btn">
+            <div class="add-icon">+</div>
+            <span>添加新分组</span>
           </button>
         </div>
       </div>
@@ -101,6 +115,11 @@ export default {
       editingGroupId: null,
       nextGroupId: 3,
       nextLinkId: 6
+    }
+  },
+  computed: {
+    totalLinks() {
+      return this.linkGroups.reduce((total, group) => total + group.links.length, 0)
     }
   },
   mounted() {
