@@ -201,6 +201,12 @@
         @close="showDataManager = false"
       />
     </Modal>
+
+    <!-- 欢迎弹窗 -->
+    <WelcomeModal 
+      v-if="showWelcomeModal"
+      @close="handleWelcomeClose"
+    />
   </div>
 </template>
 
@@ -210,6 +216,7 @@ import Modal from './components/Modal.vue'
 import GroupForm from './components/GroupForm.vue'
 import LinkForm from './components/LinkForm.vue'
 import DataManager from './components/DataManager.vue'
+import WelcomeModal from './components/WelcomeModal.vue'
 
 export default {
   name: 'App',
@@ -218,7 +225,8 @@ export default {
     Modal,
     GroupForm,
     LinkForm,
-    DataManager
+    DataManager,
+    WelcomeModal
   },
   data() {
     return {
@@ -247,6 +255,7 @@ export default {
       showEditGroupModal: false,
       showLinkModal: false,
       showDataManager: false,
+      showWelcomeModal: false,
       editingGroup: null,
       editingLink: null,
       editingGroupId: null,
@@ -312,15 +321,8 @@ export default {
     this.updateTime()
     setInterval(this.updateTime, 1000)
     
-    // 页面加载完成后自动聚焦到搜索框
-    this.$nextTick(() => {
-      // 延迟一点时间，等待页面动画完成
-      setTimeout(() => {
-        if (this.$refs.searchInput) {
-          this.$refs.searchInput.focus()
-        }
-      }, 800) // 等待页面入场动画完成
-    })
+    // 检查是否首次访问，显示欢迎弹窗
+    this.checkFirstVisit()
   },
   methods: {
     // 分组相关方法
@@ -555,6 +557,44 @@ export default {
     switchLayout(layout) {
       this.currentLayout = layout
       this.saveData()
+    },
+
+    // 检查首次访问
+    checkFirstVisit() {
+      const hasVisited = localStorage.getItem('chromNav_hasVisited')
+      if (!hasVisited) {
+        // 延迟显示欢迎弹窗，等待页面动画完成
+        setTimeout(() => {
+          this.showWelcomeModal = true
+        }, 1000)
+      } else {
+        // 非首次访问，自动聚焦到搜索框
+        this.autoFocusSearch()
+      }
+    },
+
+    // 处理欢迎弹窗关闭
+    handleWelcomeClose(dontShowAgain) {
+      this.showWelcomeModal = false
+      
+      if (dontShowAgain) {
+        // 用户选择不再显示，标记已访问
+        localStorage.setItem('chromNav_hasVisited', 'true')
+      }
+      
+      // 关闭欢迎弹窗后自动聚焦到搜索框
+      this.autoFocusSearch()
+    },
+
+    // 自动聚焦到搜索框
+    autoFocusSearch() {
+      this.$nextTick(() => {
+        setTimeout(() => {
+          if (this.$refs.searchInput) {
+            this.$refs.searchInput.focus()
+          }
+        }, 300)
+      })
     }
   }
 }
