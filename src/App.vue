@@ -21,6 +21,24 @@
           <div class="current-date">{{ currentDate }}</div>
         </div>
         
+        <!-- 中央布局切换器 -->
+        <div class="layout-section">
+          <div class="layout-switcher">
+            <button 
+              v-for="layout in layoutOptions" 
+              :key="layout.value"
+              @click="switchLayout(layout.value)"
+              :class="['layout-btn', { active: currentLayout === layout.value }]"
+              :title="layout.name"
+            >
+              <svg viewBox="0 0 24 24" width="16" height="16">
+                <path fill="currentColor" :d="layout.icon"/>
+              </svg>
+              <span class="layout-name">{{ layout.name }}</span>
+            </button>
+          </div>
+        </div>
+        
         <!-- 右侧搜索区域 -->
         <div class="search-section">
           <div class="search-container">
@@ -68,7 +86,7 @@
     <!-- 应用程序区域 -->
     <div class="apps-section">
       <div class="container">
-        <div class="apps-grid">
+        <div :class="['apps-grid', `layout-${currentLayout}`]">
           <!-- 搜索无结果时的提示 -->
           <div v-if="searchQuery && filteredLinkGroups.length === 0" class="no-results-card">
             <div class="no-results-content">
@@ -94,6 +112,7 @@
             v-for="group in filteredLinkGroups" 
             :key="group.id"
             :group="group"
+            :layout="currentLayout"
             @edit-group="editGroup"
             @delete-group="deleteGroup"
             @add-link="addLink"
@@ -208,7 +227,20 @@ export default {
       searchQuery: '',
       currentTime: '',
       currentDate: '',
-      searchEngine: 'baidu' // 'baidu' 或 'google'
+      searchEngine: 'baidu', // 'baidu' 或 'google'
+      currentLayout: 'grid', // 当前布局模式
+      layoutOptions: [
+        {
+          value: 'grid',
+          name: '网格',
+          icon: 'M3,11H11V3H3M3,21H11V13H3M13,21H21V13H13M13,3V11H21V3'
+        },
+        {
+          value: 'compact',
+          name: '紧凑',
+          icon: 'M3,4H7V8H3V4M9,5V7H21V5H9M3,10H7V14H3V10M9,11V13H21V11H9M3,16H7V20H3V16M9,17V19H21V17H9'
+        }
+      ]
     }
   },
   computed: {
@@ -354,7 +386,8 @@ export default {
         nextLinkId: this.nextLinkId,
         currentBackground: this.currentBackground,
         displayMode: this.displayMode,
-        searchEngine: this.searchEngine
+        searchEngine: this.searchEngine,
+        currentLayout: this.currentLayout
       }))
     },
     
@@ -368,6 +401,7 @@ export default {
         this.currentBackground = data.currentBackground || this.currentBackground
         this.displayMode = data.displayMode || this.displayMode
         this.searchEngine = data.searchEngine || this.searchEngine
+        this.currentLayout = data.currentLayout || this.currentLayout
       }
     },
     
@@ -475,6 +509,12 @@ export default {
       } else {
         this.searchWithGoogle()
       }
+    },
+
+    // 布局切换
+    switchLayout(layout) {
+      this.currentLayout = layout
+      this.saveData()
     }
   }
 }
