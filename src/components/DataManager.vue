@@ -39,6 +39,22 @@
             <span class="nav-desc">恢复备份的数据</span>
           </div>
         </div>
+        
+        <div 
+          :class="['nav-item', { active: activeTab === 'autoBackup' }]"
+          @click="activeTab = 'autoBackup'"
+        >
+          <div class="nav-icon">
+            <svg viewBox="0 0 24 24" width="20" height="20">
+              <path fill="currentColor" d="M12,1L21,5V11C21,16.55 17.16,21.74 12,23C6.84,21.74 3,16.55 3,11V5L12,1M12,7C10.34,7 9,8.34 9,10C9,11.66 10.34,13 12,13C13.66,13 15,11.66 15,10C15,8.34 13.66,7 12,7Z"/>
+              <path fill="currentColor" d="M12,15C10,15 8,16 8,17V18H16V17C16,16 14,15 12,15Z"/>
+            </svg>
+          </div>
+          <div class="nav-content">
+            <span class="nav-title">自动备份</span>
+            <span class="nav-desc">定时备份保护数据</span>
+          </div>
+        </div>
       </div>
       
       <div class="sidebar-stats">
@@ -245,6 +261,148 @@
           </div>
         </div>
       </div>
+      
+      <!-- 自动备份面板 -->
+      <div v-if="activeTab === 'autoBackup'" class="content-panel">
+        <div class="panel-header">
+          <h3 class="panel-title">自动备份</h3>
+          <p class="panel-subtitle">定时自动备份您的导航数据，防止数据丢失</p>
+        </div>
+        
+        <!-- 自动备份设置 -->
+        <div class="backup-settings">
+          <!-- 启用开关 -->
+          <div class="setting-card">
+            <div class="setting-header">
+              <div class="setting-info">
+                <h4 class="setting-title">启用自动备份</h4>
+                <p class="setting-desc">开启后将按设定间隔自动备份数据到本地</p>
+              </div>
+              <label class="toggle-switch">
+                <input 
+                  type="checkbox" 
+                  v-model="autoBackupEnabled"
+                  @change="toggleAutoBackup"
+                />
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+          </div>
+          
+          <!-- 备份间隔设置 -->
+          <div v-if="autoBackupEnabled" class="setting-card">
+            <div class="setting-header">
+              <div class="setting-info">
+                <h4 class="setting-title">备份间隔</h4>
+                <p class="setting-desc">选择自动备份的时间间隔</p>
+              </div>
+            </div>
+            <div class="interval-options">
+              <label 
+                v-for="option in backupIntervals" 
+                :key="option.value"
+                :class="['interval-option', { selected: backupInterval === option.value }]"
+              >
+                <input 
+                  type="radio" 
+                  :value="option.value"
+                  v-model="backupInterval"
+                  @change="updateBackupInterval"
+                />
+                <span class="option-content">
+                  <span class="option-title">{{ option.label }}</span>
+                  <span class="option-desc">{{ option.desc }}</span>
+                </span>
+              </label>
+            </div>
+          </div>
+          
+          <!-- 备份保留设置 -->
+          <div v-if="autoBackupEnabled" class="setting-card">
+            <div class="setting-header">
+              <div class="setting-info">
+                <h4 class="setting-title">备份保留</h4>
+                <p class="setting-desc">设置保留多少个历史备份文件</p>
+              </div>
+            </div>
+            <div class="retention-setting">
+              <input 
+                type="range" 
+                min="3" 
+                max="20" 
+                v-model="maxBackupFiles"
+                @input="updateMaxBackupFiles"
+                class="retention-slider"
+              />
+              <div class="retention-info">
+                <span class="retention-value">{{ maxBackupFiles }} 个文件</span>
+                <span class="retention-desc">超出数量时自动删除最旧的备份</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- 备份状态和历史 -->
+        <div v-if="autoBackupEnabled" class="backup-status">
+          <div class="status-card">
+            <div class="status-header">
+              <h4>备份状态</h4>
+              <span :class="['status-badge', backupStatus]">{{ backupStatusText }}</span>
+            </div>
+            <div class="status-info">
+              <div class="status-item">
+                <span class="status-label">上次备份：</span>
+                <span class="status-value">{{ lastBackupTime || '暂无' }}</span>
+              </div>
+              <div class="status-item">
+                <span class="status-label">下次备份：</span>
+                <span class="status-value">{{ nextBackupTime || '计算中...' }}</span>
+              </div>
+              <div class="status-item">
+                <span class="status-label">备份文件：</span>
+                <span class="status-value">{{ backupFiles.length }} 个</span>
+              </div>
+            </div>
+            <div class="status-actions">
+              <button @click="createManualBackup" class="btn btn-outline">
+                <svg viewBox="0 0 24 24" width="16" height="16">
+                  <path fill="currentColor" d="M12,1L21,5V11C21,16.55 17.16,21.74 12,23C6.84,21.74 3,16.55 3,11V5L12,1Z"/>
+                </svg>
+                立即备份
+              </button>
+              <button @click="showBackupHistory = !showBackupHistory" class="btn btn-text">
+                {{ showBackupHistory ? '隐藏历史' : '查看历史' }}
+              </button>
+            </div>
+          </div>
+          
+          <!-- 备份历史列表 -->
+          <div v-if="showBackupHistory" class="backup-history">
+            <h4>备份历史</h4>
+            <div v-if="backupFiles.length === 0" class="empty-history">
+              <p>暂无备份文件</p>
+            </div>
+            <div v-else class="history-list">
+              <div 
+                v-for="backup in backupFiles" 
+                :key="backup.id"
+                class="history-item"
+              >
+                <div class="history-info">
+                  <span class="history-name">{{ backup.name }}</span>
+                  <span class="history-time">{{ formatDate(backup.timestamp) }}</span>
+                  <span class="history-size">{{ formatSize(backup.size) }}</span>
+                </div>
+                <div class="history-actions">
+                  <button @click="restoreBackup(backup)" class="btn btn-sm">恢复</button>
+                  <button @click="downloadBackup(backup)" class="btn btn-sm btn-outline">下载</button>
+                  <button @click="deleteBackup(backup.id)" class="btn btn-sm btn-danger">删除</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -267,7 +425,25 @@ export default {
       selectedGroups: [],
       includeSettings: true,
       importText: '',
-      previewData: null
+      previewData: null,
+      // 自动备份相关
+      autoBackupEnabled: false,
+      backupInterval: 24, // 小时
+      maxBackupFiles: 10,
+      backupStatus: 'idle', // idle, running, success, error
+      lastBackupTime: null,
+      nextBackupTime: null,
+      backupFiles: [],
+      showBackupHistory: false,
+      backupTimer: null,
+      backupIntervals: [
+        { value: 1, label: '每小时', desc: '每1小时自动备份一次' },
+        { value: 6, label: '每6小时', desc: '每6小时自动备份一次' },
+        { value: 12, label: '每12小时', desc: '每12小时自动备份一次' },
+        { value: 24, label: '每天', desc: '每24小时自动备份一次' },
+        { value: 72, label: '每3天', desc: '每72小时自动备份一次' },
+        { value: 168, label: '每周', desc: '每168小时自动备份一次' }
+      ]
     }
   },
   computed: {
@@ -281,6 +457,15 @@ export default {
     },
     totalLinks() {
       return this.linkGroups.reduce((count, group) => count + (group.links?.length || 0), 0)
+    },
+    backupStatusText() {
+      const statusMap = {
+        idle: '待机中',
+        running: '备份中...',
+        success: '备份成功',
+        error: '备份失败'
+      }
+      return statusMap[this.backupStatus] || '未知状态'
     }
   },
   methods: {
@@ -405,7 +590,241 @@ export default {
       return this.previewData.linkGroups.reduce((count, group) => 
         count + (group.links?.length || 0), 0
       )
+    },
+    
+    // 自动备份相关方法
+    toggleAutoBackup() {
+      this.saveBackupSettings()
+      if (this.autoBackupEnabled) {
+        this.startAutoBackup()
+        $success('自动备份已启用')
+      } else {
+        this.stopAutoBackup()
+        $success('自动备份已禁用')
+      }
+    },
+    
+    updateBackupInterval() {
+      this.saveBackupSettings()
+      if (this.autoBackupEnabled) {
+        this.startAutoBackup() // 重新启动定时器
+      }
+    },
+    
+    updateMaxBackupFiles() {
+      this.saveBackupSettings()
+      this.cleanOldBackups()
+    },
+    
+    startAutoBackup() {
+      this.stopAutoBackup() // 先停止现有的定时器
+      
+      const intervalMs = this.backupInterval * 60 * 60 * 1000 // 转换为毫秒
+      this.backupTimer = setInterval(() => {
+        this.createAutoBackup()
+      }, intervalMs)
+      
+      this.updateNextBackupTime()
+    },
+    
+    stopAutoBackup() {
+      if (this.backupTimer) {
+        clearInterval(this.backupTimer)
+        this.backupTimer = null
+      }
+      this.nextBackupTime = null
+    },
+    
+    updateNextBackupTime() {
+      if (this.autoBackupEnabled && this.backupInterval) {
+        const now = new Date()
+        const nextTime = new Date(now.getTime() + this.backupInterval * 60 * 60 * 1000)
+        this.nextBackupTime = this.formatDate(nextTime.getTime())
+      }
+    },
+    
+    createAutoBackup() {
+      this.createBackup('auto')
+    },
+    
+    createManualBackup() {
+      this.createBackup('manual')
+    },
+    
+    createBackup(type = 'manual') {
+      this.backupStatus = 'running'
+      
+      try {
+        const backupData = {
+          linkGroups: this.linkGroups,
+          exportDate: new Date().toISOString(),
+          version: '1.0',
+          type: type
+        }
+        
+        // 获取设置数据
+        const savedData = localStorage.getItem('navData')
+        if (savedData) {
+          const data = JSON.parse(savedData)
+          backupData.settings = {
+            currentBackground: data.currentBackground,
+            displayMode: data.displayMode,
+            searchEngine: data.searchEngine
+          }
+        }
+        
+        const backupId = Date.now().toString()
+        const backupName = `${type === 'auto' ? '自动备份' : '手动备份'}-${this.getDateString()}`
+        const backupContent = JSON.stringify(backupData, null, 2)
+        
+        // 保存到localStorage
+        const backup = {
+          id: backupId,
+          name: backupName,
+          timestamp: Date.now(),
+          size: backupContent.length,
+          data: backupContent,
+          type: type
+        }
+        
+        this.backupFiles.unshift(backup)
+        this.cleanOldBackups()
+        this.saveBackupFiles()
+        
+        this.lastBackupTime = this.formatDate(backup.timestamp)
+        this.updateNextBackupTime()
+        this.backupStatus = 'success'
+        
+        if (type === 'manual') {
+          $success('备份创建成功')
+        }
+        
+        // 3秒后重置状态
+        setTimeout(() => {
+          if (this.backupStatus === 'success') {
+            this.backupStatus = 'idle'
+          }
+        }, 3000)
+        
+      } catch (error) {
+        this.backupStatus = 'error'
+        console.error('创建备份失败:', error)
+        if (type === 'manual') {
+          $error('备份创建失败')
+        }
+        
+        setTimeout(() => {
+          this.backupStatus = 'idle'
+        }, 3000)
+      }
+    },
+    
+    cleanOldBackups() {
+      if (this.backupFiles.length > this.maxBackupFiles) {
+        this.backupFiles = this.backupFiles
+          .sort((a, b) => b.timestamp - a.timestamp)
+          .slice(0, this.maxBackupFiles)
+      }
+    },
+    
+    restoreBackup(backup) {
+      try {
+        const backupData = JSON.parse(backup.data)
+        this.$emit('import', backupData)
+        $success('备份恢复成功')
+        this.$emit('close')
+      } catch (error) {
+        $error('备份文件损坏，无法恢复')
+      }
+    },
+    
+    downloadBackup(backup) {
+      this.downloadJSON(JSON.parse(backup.data), backup.name + '.json')
+    },
+    
+    deleteBackup(backupId) {
+      const index = this.backupFiles.findIndex(b => b.id === backupId)
+      if (index !== -1) {
+        this.backupFiles.splice(index, 1)
+        this.saveBackupFiles()
+        $success('备份文件已删除')
+      }
+    },
+    
+    saveBackupSettings() {
+      const settings = {
+        autoBackupEnabled: this.autoBackupEnabled,
+        backupInterval: this.backupInterval,
+        maxBackupFiles: this.maxBackupFiles,
+        lastBackupTime: this.lastBackupTime
+      }
+      localStorage.setItem('autoBackupSettings', JSON.stringify(settings))
+    },
+    
+    loadBackupSettings() {
+      const settings = localStorage.getItem('autoBackupSettings')
+      if (settings) {
+        try {
+          const data = JSON.parse(settings)
+          this.autoBackupEnabled = data.autoBackupEnabled || false
+          this.backupInterval = data.backupInterval || 24
+          this.maxBackupFiles = data.maxBackupFiles || 10
+          this.lastBackupTime = data.lastBackupTime || null
+        } catch (error) {
+          console.error('加载备份设置失败:', error)
+        }
+      }
+    },
+    
+    saveBackupFiles() {
+      try {
+        localStorage.setItem('autoBackupFiles', JSON.stringify(this.backupFiles))
+      } catch (error) {
+        console.error('保存备份文件列表失败:', error)
+      }
+    },
+    
+    loadBackupFiles() {
+      const files = localStorage.getItem('autoBackupFiles')
+      if (files) {
+        try {
+          this.backupFiles = JSON.parse(files)
+        } catch (error) {
+          console.error('加载备份文件列表失败:', error)
+          this.backupFiles = []
+        }
+      }
+    },
+    
+    formatDate(timestamp) {
+      const date = new Date(timestamp)
+      return date.toLocaleString('zh-CN', {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit'
+      })
+    },
+    
+    formatSize(bytes) {
+      if (bytes < 1024) return bytes + ' B'
+      if (bytes < 1024 * 1024) return Math.round(bytes / 1024) + ' KB'
+      return Math.round(bytes / (1024 * 1024)) + ' MB'
     }
+  },
+  
+  mounted() {
+    this.loadBackupSettings()
+    this.loadBackupFiles()
+    
+    if (this.autoBackupEnabled) {
+      this.startAutoBackup()
+    }
+  },
+  
+  beforeUnmount() {
+    this.stopAutoBackup()
   }
 }
 </script>
@@ -986,6 +1405,356 @@ export default {
   }
 }
 
+/* 自动备份样式 */
+.backup-settings {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.setting-card {
+  background: white;
+  border-radius: 12px;
+  border: 1px solid #e5e7eb;
+  padding: 1.5rem;
+  transition: all 0.3s ease;
+}
+
+.setting-card:hover {
+  border-color: #d1d5db;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.setting-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1rem;
+}
+
+.setting-info h4 {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #111827;
+  margin-bottom: 0.5rem;
+}
+
+.setting-desc {
+  font-size: 0.875rem;
+  color: #6b7280;
+  line-height: 1.4;
+}
+
+/* 切换开关样式 */
+.toggle-switch {
+  position: relative;
+  display: inline-block;
+  width: 48px;
+  height: 24px;
+  cursor: pointer;
+}
+
+.toggle-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.toggle-slider {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: #e5e7eb;
+  border-radius: 24px;
+  transition: all 0.3s ease;
+}
+
+.toggle-slider:before {
+  content: '';
+  position: absolute;
+  height: 18px;
+  width: 18px;
+  left: 3px;
+  bottom: 3px;
+  background: white;
+  border-radius: 50%;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.toggle-switch input:checked + .toggle-slider {
+  background: #3b82f6;
+}
+
+.toggle-switch input:checked + .toggle-slider:before {
+  transform: translateX(24px);
+}
+
+/* 间隔选项样式 */
+.interval-options {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+}
+
+.interval-option {
+  display: flex;
+  align-items: center;
+  padding: 1rem;
+  border: 2px solid #e5e7eb;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.interval-option:hover {
+  border-color: #d1d5db;
+  background: #f9fafb;
+}
+
+.interval-option.selected {
+  border-color: #3b82f6;
+  background: #eff6ff;
+}
+
+.interval-option input {
+  display: none;
+}
+
+.option-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.option-title {
+  font-weight: 600;
+  color: #111827;
+}
+
+.option-desc {
+  font-size: 0.875rem;
+  color: #6b7280;
+}
+
+/* 保留设置样式 */
+.retention-setting {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.retention-slider {
+  width: 100%;
+  height: 6px;
+  border-radius: 3px;
+  background: #e5e7eb;
+  outline: none;
+  appearance: none;
+}
+
+.retention-slider::-webkit-slider-thumb {
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #3b82f6;
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.retention-slider::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #3b82f6;
+  cursor: pointer;
+  border: none;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.retention-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.retention-value {
+  font-weight: 600;
+  color: #111827;
+}
+
+.retention-desc {
+  font-size: 0.875rem;
+  color: #6b7280;
+}
+
+/* 备份状态样式 */
+.backup-status {
+  margin-top: 2rem;
+}
+
+.status-card {
+  background: white;
+  border-radius: 12px;
+  border: 1px solid #e5e7eb;
+  padding: 1.5rem;
+}
+
+.status-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.status-header h4 {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #111827;
+}
+
+.status-badge {
+  padding: 0.25rem 0.75rem;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.status-badge.idle {
+  background: #f3f4f6;
+  color: #6b7280;
+}
+
+.status-badge.running {
+  background: #dbeafe;
+  color: #1d4ed8;
+}
+
+.status-badge.success {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+.status-badge.error {
+  background: #fee2e2;
+  color: #dc2626;
+}
+
+.status-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.status-item {
+  display: flex;
+  justify-content: space-between;
+}
+
+.status-label {
+  color: #6b7280;
+}
+
+.status-value {
+  font-weight: 500;
+  color: #111827;
+}
+
+.status-actions {
+  display: flex;
+  gap: 1rem;
+}
+
+/* 备份历史样式 */
+.backup-history {
+  margin-top: 1.5rem;
+}
+
+.backup-history h4 {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #111827;
+  margin-bottom: 1rem;
+}
+
+.empty-history {
+  text-align: center;
+  padding: 2rem;
+  color: #6b7280;
+}
+
+.history-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.history-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  background: #f9fafb;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+}
+
+.history-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  flex: 1;
+}
+
+.history-name {
+  font-weight: 500;
+  color: #111827;
+}
+
+.history-time {
+  font-size: 0.875rem;
+  color: #6b7280;
+}
+
+.history-size {
+  font-size: 0.75rem;
+  color: #9ca3af;
+}
+
+.history-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.btn-sm {
+  padding: 0.375rem 0.75rem;
+  font-size: 0.75rem;
+}
+
+.btn-danger {
+  background: #ef4444;
+  color: white;
+}
+
+.btn-danger:hover {
+  background: #dc2626;
+}
+
+.btn-text {
+  background: transparent;
+  color: #3b82f6;
+  border: none;
+  text-decoration: underline;
+}
+
+.btn-text:hover {
+  color: #2563eb;
+}
+
 @media (max-width: 768px) {
   .manager-content {
     padding: 1rem;
@@ -997,6 +1766,24 @@ export default {
   
   .preview-groups {
     grid-template-columns: 1fr;
+  }
+  
+  .interval-options {
+    grid-template-columns: 1fr;
+  }
+  
+  .status-actions {
+    flex-direction: column;
+  }
+  
+  .history-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+  
+  .history-actions {
+    align-self: stretch;
   }
 }
 </style>
