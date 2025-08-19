@@ -144,19 +144,29 @@ export default {
   gap: 0.5rem;
 }
 
+/* 分组标题的操作按钮始终显示 */
+.group-actions .action-btn {
+  opacity: 1 !important;
+  visibility: visible !important;
+  transform: translateX(0) !important;
+}
+
 .action-btn {
   background: rgba(255, 255, 255, 0.1);
   border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: 6px;
   padding: 0.375rem;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.3s ease;
   display: flex;
   align-items: center;
   justify-content: center;
   width: 28px;
   height: 28px;
   color: rgba(255, 255, 255, 0.8);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateX(10px);
 }
 
 .action-btn:hover {
@@ -253,6 +263,13 @@ export default {
   display: flex;
   gap: 0.25rem;
   padding: 0.5rem;
+}
+
+/* 链接项悬停时显示操作按钮 */
+.link-item:hover .link-actions .action-btn {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(0);
 }
 
 .add-link-item {
