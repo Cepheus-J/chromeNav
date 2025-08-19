@@ -88,6 +88,7 @@
               </svg>
             </button>
             <input 
+              ref="searchInput"
               v-model="searchQuery" 
               type="text" 
               :placeholder="searchPlaceholder" 
@@ -310,6 +311,16 @@ export default {
     this.loadData()
     this.updateTime()
     setInterval(this.updateTime, 1000)
+    
+    // 页面加载完成后自动聚焦到搜索框
+    this.$nextTick(() => {
+      // 延迟一点时间，等待页面动画完成
+      setTimeout(() => {
+        if (this.$refs.searchInput) {
+          this.$refs.searchInput.focus()
+        }
+      }, 800) // 等待页面入场动画完成
+    })
   },
   methods: {
     // 分组相关方法
