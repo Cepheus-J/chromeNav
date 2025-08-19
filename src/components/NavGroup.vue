@@ -111,6 +111,77 @@ export default {
   transform: translateY(-4px);
 }
 
+/* 移动端优化 */
+@media (max-width: 768px) {
+  .nav-group {
+    padding: 1rem;
+    margin-bottom: 0.75rem;
+  }
+  
+  .group-header {
+    margin-bottom: 0.75rem;
+    padding-bottom: 0.5rem;
+  }
+  
+  .group-title {
+    font-size: 1rem;
+  }
+  
+  .group-description {
+    font-size: 0.8rem;
+  }
+  
+  .group-actions {
+    gap: 0.375rem;
+  }
+  
+  .action-btn {
+    width: 28px !important;
+    height: 28px !important;
+    padding: 0.25rem !important;
+  }
+  
+  .links-list {
+    gap: 0.5rem;
+  }
+  
+  .link-item {
+    padding: 0.75rem;
+  }
+  
+  .link-content {
+    gap: 0.75rem;
+  }
+  
+  .link-icon {
+    width: 20px;
+    height: 20px;
+  }
+  
+  .link-info h3 {
+    font-size: 0.9rem;
+  }
+  
+  .link-info p {
+    font-size: 0.75rem;
+  }
+  
+  .link-actions {
+    gap: 0.25rem;
+  }
+  
+  .link-actions .action-btn {
+    width: 24px !important;
+    height: 24px !important;
+    padding: 0.2rem !important;
+  }
+  
+  .add-link-btn {
+    padding: 0.75rem;
+    font-size: 0.8rem;
+  }
+}
+
 .group-header {
   display: flex;
   justify-content: space-between;

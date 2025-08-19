@@ -19,7 +19,7 @@ body {
   z-index: 10;
 }
 
-/* 全屏风景背景 */
+/* 全屏风景背景 - 直接显示本地图片 */
 .background-animation {
   position: fixed;
   top: 0;
@@ -30,24 +30,18 @@ body {
   overflow: hidden;
   background: 
     linear-gradient(135deg, rgba(0, 0, 0, 0.3) 0%, rgba(0, 0, 0, 0.1) 100%),
-    url('https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80');
+    url('/src/images/1.avif');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
   background-attachment: fixed;
 }
 
-/* 多个在线风景背景选择 */
+/* 备用背景样式（如需要多个背景选择时使用） */
 .background-animation.bg-1 {
   background-image: 
     linear-gradient(135deg, rgba(0, 0, 0, 0.2) 0%, rgba(0, 0, 0, 0.1) 100%),
-    url('https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80');
-}
-
-.background-animation.bg-2 {
-  background-image: 
-    linear-gradient(135deg, rgba(0, 0, 0, 0.2) 0%, rgba(0, 0, 0, 0.1) 100%),
-    url('https://images.unsplash.com/photo-1441974231531-c6227db76b6e?ixlib=rb-4.0.3&auto=format&fit=crop&w=2071&q=80');
+    url('/src/images/1.avif');
 }
 
 .background-animation.bg-3 {
@@ -1068,9 +1062,13 @@ body {
 
 /* 响应式设计更新 */
 @media (max-width: 768px) {
+  .modern-header {
+    padding: 1rem 0 0.5rem;
+  }
+  
   .modern-header .container {
     flex-direction: column;
-    gap: 1rem;
+    gap: 0.75rem;
     padding: 0 1rem;
   }
   
@@ -1078,9 +1076,52 @@ body {
     text-align: center;
   }
   
+  /* 移动端时间显示优化 */
+  .current-time {
+    font-size: 2.5rem !important;
+    font-weight: 300;
+    margin-bottom: 0.25rem;
+  }
+  
+  .current-date {
+    font-size: 0.875rem !important;
+    opacity: 0.8;
+  }
+  
   .search-section {
     max-width: none;
     width: 100%;
+    position: relative;
+  }
+  
+  /* 移动端搜索框优化 */
+  .search-input {
+    width: 100%;
+    padding: 0.75rem 3rem 0.75rem 3rem;
+    font-size: 0.875rem;
+    border-radius: 12px;
+  }
+  
+  /* 移动端搜索引擎图标优化 */
+  .search-engine-icon {
+    position: absolute;
+    left: 0.75rem;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 32px;
+    height: 32px;
+    padding: 0.25rem;
+  }
+  
+  /* 移动端数据管理按钮优化 */
+  .data-manager-icon {
+    position: absolute;
+    right: 0.75rem;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 32px;
+    height: 32px;
+    padding: 0.25rem;
   }
   
   .system-widgets-section {
@@ -1097,15 +1138,17 @@ body {
   }
   
   .brand-section {
-    padding: 1rem 0;
+    padding: 0.5rem 0;
   }
   
   .apps-section {
     padding: 0 1rem 2rem;
   }
   
+  /* 移动端分组网格优化 */
   .apps-grid {
     grid-template-columns: 1fr;
+    gap: 1rem;
   }
 
   .no-results-card {
@@ -1115,15 +1158,6 @@ body {
   .search-engine-search-btn {
     padding: 0.75rem 1.25rem;
     font-size: 0.8rem;
-  }
-
-  .search-input {
-    padding: 0.5rem 3rem 0.5rem 2.5rem;
-  }
-
-  .search-engine-icon {
-    position: static;
-    margin-top: 0.5rem;
-    align-self: center;
+    border-radius: 10px;
   }
 }

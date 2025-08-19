@@ -440,4 +440,67 @@ export default {
     align-self: center;
   }
 }
+
+/* 移动端优化 */
+@media (max-width: 768px) {
+  .form-content {
+    padding: 1.5rem;
+  }
+  
+  .form-group {
+    margin-bottom: 1rem;
+  }
+  
+  .input-wrapper {
+    gap: 0.75rem;
+  }
+  
+  .form-input, .form-textarea {
+    font-size: 0.9rem;
+    padding: 0.75rem 0.75rem 0.75rem 2.75rem;
+  }
+  
+  .form-textarea {
+    padding: 0.75rem;
+  }
+  
+  .input-icon {
+    left: 0.75rem;
+    width: 18px;
+    height: 18px;
+  }
+  
+  .form-actions {
+    gap: 0.75rem;
+    margin-top: 1.5rem;
+    padding-top: 1rem;
+  }
+  
+  .form-btn {
+    padding: 0.75rem 1.25rem;
+    font-size: 0.9rem;
+  }
+  
+  .preview-section {
+    padding: 1rem;
+    margin-top: 1rem;
+  }
+  
+  .preview-content {
+    gap: 0.75rem;
+  }
+  
+  .preview-icon {
+    width: 24px;
+    height: 24px;
+  }
+  
+  .preview-title {
+    font-size: 0.9rem;
+  }
+  
+  .preview-url, .preview-description {
+    font-size: 0.8rem;
+  }
+}
 </style>

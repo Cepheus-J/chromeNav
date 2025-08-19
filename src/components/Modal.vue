@@ -150,10 +150,32 @@ export default {
 }
 
 @media (max-width: 768px) {
+  .modal-overlay {
+    padding: 0.5rem;
+    align-items: flex-start;
+    padding-top: 2rem;
+  }
+  
   .modal-content {
-    margin: 1rem;
-    padding: 1.5rem;
-    max-width: none;
+    width: 100%;
+    max-width: 100%;
+    max-height: 95vh;
+    margin: 0;
+    border-radius: 12px;
+  }
+  
+  .modal-header {
+    padding: 1rem 1.5rem;
+  }
+  
+  .modal-title {
+    font-size: 1.1rem;
+  }
+  
+  .close-btn {
+    width: 28px;
+    height: 28px;
+    padding: 0.25rem;
   }
 }
 </style>
