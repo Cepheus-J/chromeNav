@@ -24,13 +24,26 @@
         <!-- 右侧搜索区域 -->
         <div class="search-section">
           <div class="search-container">
-            <svg class="search-icon" viewBox="0 0 24 24" width="18" height="18">
-              <path fill="currentColor" d="M9.5,3A6.5,6.5 0 0,1 16,9.5C16,11.11 15.41,12.59 14.44,13.73L14.71,14H15.5L20.5,19L19,20.5L14,15.5V14.71L13.73,14.44C12.59,15.41 11.11,16 9.5,16A6.5,6.5 0 0,1 3,9.5A6.5,6.5 0 0,1 9.5,3M9.5,5C7,5 5,7 5,9.5C5,12 7,14 9.5,14C12,14 14,12 14,9.5C14,7 12,5 9.5,5Z"/>
-            </svg>
+            <button @click="toggleSearchEngine" class="search-engine-icon left-icon" :title="searchEngineTitle">
+              <!-- 百度图标 -->
+              <svg v-if="searchEngine === 'baidu'" class="engine-logo baidu-logo" viewBox="0 0 100 100" width="20" height="20">
+                <circle cx="50" cy="50" r="45" fill="#2932E1"/>
+                <path d="M30 35c0-5 4-9 9-9s9 4 9 9-4 9-9 9-9-4-9-9zm23 0c0-5 4-9 9-9s9 4 9 9-4 9-9 9-9-4-9-9zM25 55c0-3 2-5 5-5s5 2 5 5v10c0 8 6 14 14 14h2c8 0 14-6 14-14V55c0-3 2-5 5-5s5 2 5 5v10c0 14-11 25-25 25h-1c-14 0-25-11-25-25V55z" fill="white"/>
+              </svg>
+              <!-- Chrome图标 -->
+              <svg v-else class="engine-logo chrome-logo" viewBox="0 0 100 100" width="20" height="20">
+                <circle cx="50" cy="50" r="45" fill="#4285F4"/>
+                <circle cx="50" cy="50" r="20" fill="white"/>
+                <circle cx="50" cy="50" r="15" fill="#4285F4"/>
+                <path d="M50 15 A35 35 0 0 1 80 35 L65 50 A15 15 0 0 1 50 35 Z" fill="#EA4335"/>
+                <path d="M20 65 A35 35 0 0 1 50 15 L50 35 A15 15 0 0 1 35 50 Z" fill="#FBBC05"/>
+                <path d="M80 35 A35 35 0 0 1 20 65 L35 50 A15 15 0 0 1 50 35 Z" fill="#34A853"/>
+              </svg>
+            </button>
             <input 
               v-model="searchQuery" 
               type="text" 
-              placeholder="搜索书签或按回车用百度搜索... (Ctrl+, 打开数据管理)" 
+              :placeholder="searchPlaceholder" 
               class="search-input"
               @input="handleSearch"
               @keydown="handleKeydown"
@@ -64,11 +77,14 @@
               </svg>
               <h3 class="no-results-title">未找到相关书签</h3>
               <p class="no-results-text">没有找到包含 "{{ searchQuery }}" 的书签</p>
-              <button @click="searchWithBaidu" class="baidu-search-btn">
-                <svg viewBox="0 0 24 24" width="16" height="16">
-                  <path fill="currentColor" d="M21,16V14L13,9V7A3,3 0 0,0 10,4A3,3 0 0,0 7,7V9L2,12V14L7,11V13A3,3 0 0,0 10,16A3,3 0 0,0 13,13V11L21,16Z"/>
+              <button @click="performSearch" class="search-engine-search-btn">
+                <svg v-if="searchEngine === 'baidu'" viewBox="0 0 24 24" width="16" height="16">
+                  <path fill="currentColor" d="M12,2A10,10 0 0,1 22,12A10,10 0 0,1 12,22A10,10 0 0,1 2,12A10,10 0 0,1 12,2M12,4A8,8 0 0,0 4,12A8,8 0 0,0 12,20A8,8 0 0,0 20,12A8,8 0 0,0 12,4M12,6A6,6 0 0,1 18,12A6,6 0 0,1 12,18A6,6 0 0,1 6,12A6,6 0 0,1 12,6M12,8A4,4 0 0,0 8,12A4,4 0 0,0 12,16A4,4 0 0,0 16,12A4,4 0 0,0 12,8Z"/>
                 </svg>
-                使用百度搜索 "{{ searchQuery }}"
+                <svg v-else viewBox="0 0 24 24" width="16" height="16">
+                  <path fill="currentColor" d="M9.5,3A6.5,6.5 0 0,1 16,9.5C16,11.11 15.41,12.59 14.44,13.73L14.71,14H15.5L20.5,19L19,20.5L14,15.5V14.71L13.73,14.44C12.59,15.41 11.11,16 9.5,16A6.5,6.5 0 0,1 3,9.5A6.5,6.5 0 0,1 9.5,3M9.5,5C7,5 5,7 5,9.5C5,12 7,14 9.5,14C12,14 14,12 14,9.5C14,7 12,5 9.5,5Z"/>
+                </svg>
+                使用{{ searchEngine === 'baidu' ? '百度' : 'Google' }}搜索 "{{ searchQuery }}"
               </button>
             </div>
           </div>
@@ -191,7 +207,8 @@ export default {
       displayMode: 'mode-cover',
       searchQuery: '',
       currentTime: '',
-      currentDate: ''
+      currentDate: '',
+      searchEngine: 'baidu' // 'baidu' 或 'google'
     }
   },
   computed: {
@@ -219,6 +236,13 @@ export default {
           link.description.toLowerCase().includes(query)
         )
       })).filter(group => group.links.length > 0)
+    },
+    searchPlaceholder() {
+      const engineName = this.searchEngine === 'baidu' ? '百度' : 'Google'
+      return `搜索书签或按回车用${engineName}搜索... (Ctrl+, 打开数据管理)`
+    },
+    searchEngineTitle() {
+      return this.searchEngine === 'baidu' ? '当前：百度搜索，点击切换到Google' : '当前：Google搜索，点击切换到百度'
     }
   },
   mounted() {
@@ -329,7 +353,8 @@ export default {
         nextGroupId: this.nextGroupId,
         nextLinkId: this.nextLinkId,
         currentBackground: this.currentBackground,
-        displayMode: this.displayMode
+        displayMode: this.displayMode,
+        searchEngine: this.searchEngine
       }))
     },
     
@@ -342,6 +367,7 @@ export default {
         this.nextLinkId = data.nextLinkId || this.nextLinkId
         this.currentBackground = data.currentBackground || this.currentBackground
         this.displayMode = data.displayMode || this.displayMode
+        this.searchEngine = data.searchEngine || this.searchEngine
       }
     },
     
@@ -418,9 +444,9 @@ export default {
     },
 
     handleEnterSearch() {
-      // 按回车键时，如果没有搜索结果，自动使用百度搜索
+      // 按回车键时，如果没有搜索结果，自动使用当前选择的搜索引擎
       if (this.searchQuery && this.filteredLinkGroups.length === 0) {
-        this.searchWithBaidu()
+        this.performSearch()
       }
     },
 
@@ -428,6 +454,26 @@ export default {
       if (this.searchQuery.trim()) {
         const searchUrl = `https://www.baidu.com/s?wd=${encodeURIComponent(this.searchQuery.trim())}`
         window.open(searchUrl, '_blank')
+      }
+    },
+
+    searchWithGoogle() {
+      if (this.searchQuery.trim()) {
+        const searchUrl = `https://www.google.com/search?q=${encodeURIComponent(this.searchQuery.trim())}`
+        window.open(searchUrl, '_blank')
+      }
+    },
+
+    toggleSearchEngine() {
+      this.searchEngine = this.searchEngine === 'baidu' ? 'google' : 'baidu'
+      this.saveData()
+    },
+
+    performSearch() {
+      if (this.searchEngine === 'baidu') {
+        this.searchWithBaidu()
+      } else {
+        this.searchWithGoogle()
       }
     }
   }
