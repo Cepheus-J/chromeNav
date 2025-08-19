@@ -75,6 +75,18 @@ export default {
   justify-content: center;
   z-index: 1000;
   padding: 1rem;
+  animation: modal-overlay-fade-in 0.3s ease-out;
+}
+
+@keyframes modal-overlay-fade-in {
+  from {
+    opacity: 0;
+    backdrop-filter: blur(0px);
+  }
+  to {
+    opacity: 1;
+    backdrop-filter: blur(4px);
+  }
 }
 
 .modal-content {
@@ -89,9 +101,50 @@ export default {
   position: relative;
   display: flex;
   flex-direction: column;
+  animation: modal-content-slide-up 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
-/* 移除了动画效果，根据用户要求 */
+@keyframes modal-content-slide-up {
+  from {
+    opacity: 0;
+    transform: translateY(50px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* 增强模态框动画效果 */
+.modal-header {
+  animation: modal-header-slide-in 0.5s ease-out 0.1s both;
+}
+
+.modal-body {
+  animation: modal-body-fade-in 0.5s ease-out 0.2s both;
+}
+
+@keyframes modal-header-slide-in {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes modal-body-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
 
 .modal-header {
   display: flex;
@@ -131,8 +184,34 @@ export default {
   align-items: center;
   justify-content: center;
   border-radius: 8px;
-  transition: all 0.2s ease;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   flex-shrink: 0;
+  position: relative;
+  overflow: hidden;
+}
+
+.close-btn::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  background: rgba(239, 68, 68, 0.1);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  transition: width 0.3s ease, height 0.3s ease;
+}
+
+.close-btn:hover::before {
+  width: 40px;
+  height: 40px;
+}
+
+.close-btn svg {
+  position: relative;
+  z-index: 1;
+  transition: all 0.3s ease;
 }
 
 .modal-content-no-header .close-btn {
@@ -145,8 +224,16 @@ export default {
 }
 
 .close-btn:hover {
-  background: #f3f4f6;
-  color: #374151;
+  color: #ef4444;
+  transform: scale(1.1);
+}
+
+.close-btn:hover svg {
+  transform: rotate(90deg);
+}
+
+.close-btn:active {
+  transform: scale(0.95);
 }
 
 @media (max-width: 768px) {

@@ -147,6 +147,31 @@ export default {
   padding: 1.5rem;
   transition: all 0.3s ease;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  position: relative;
+  overflow: hidden;
+}
+
+/* 添加闪光效果 */
+.nav-group::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+  transition: left 0.6s ease;
+  z-index: 0;
+}
+
+.nav-group:hover::before {
+  left: 100%;
+}
+
+/* 确保内容在闪光效果之上 */
+.nav-group > * {
+  position: relative;
+  z-index: 1;
 }
 
 .nav-group:hover {
@@ -202,7 +227,7 @@ export default {
   border-radius: 6px;
   padding: 0.375rem;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -211,7 +236,28 @@ export default {
   color: rgba(255, 255, 255, 0.8);
   opacity: 0;
   visibility: hidden;
-  transform: translateX(10px);
+  transform: translateX(10px) scale(0.8);
+  position: relative;
+  overflow: hidden;
+}
+
+/* 按钮波纹效果 */
+.action-btn::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  transition: width 0.3s ease, height 0.3s ease;
+}
+
+.action-btn:active::before {
+  width: 40px;
+  height: 40px;
 }
 
 .action-btn:hover {
@@ -245,16 +291,44 @@ export default {
   background: rgba(255, 255, 255, 0.1);
   border-radius: 8px;
   border: 1px solid rgba(255, 255, 255, 0.15);
-  transition: all 0.2s ease;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   display: flex;
   align-items: center;
   overflow: hidden;
+  position: relative;
+  backdrop-filter: blur(10px);
+}
+
+/* 链接项闪光效果 */
+.link-item::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.15), transparent);
+  transition: left 0.4s ease;
+  z-index: 0;
+}
+
+.link-item:hover::before {
+  left: 100%;
+}
+
+/* 确保链接内容在闪光效果之上 */
+.link-content {
+  position: relative;
+  z-index: 1;
 }
 
 .link-item:hover {
   background: rgba(255, 255, 255, 0.2);
   border-color: rgba(255, 255, 255, 0.25);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  box-shadow: 
+    0 8px 25px rgba(0, 0, 0, 0.15),
+    0 0 20px rgba(255, 255, 255, 0.1);
+  transform: translateY(-3px) scale(1.02);
 }
 
 .link-content {
@@ -277,12 +351,40 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+/* 图标发光效果 */
+.link-icon::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: 8px;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.2) 0%, transparent 70%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.link-item:hover .link-icon::after {
+  opacity: 1;
 }
 
 .link-icon img {
   width: 20px;
   height: 20px;
   object-fit: contain;
+  transition: all 0.3s ease;
+  z-index: 1;
+  position: relative;
+}
+
+.link-item:hover .link-icon img {
+  transform: scale(1.1) rotate(5deg);
+  filter: brightness(1.2);
 }
 
 .link-info {
@@ -295,6 +397,13 @@ export default {
   margin-bottom: 0.125rem;
   color: white;
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.link-item:hover .link-name {
+  color: #fff;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.4), 0 0 8px rgba(255, 255, 255, 0.3);
 }
 
 .link-description {
@@ -314,7 +423,16 @@ export default {
 .link-item:hover .link-actions .action-btn {
   opacity: 1;
   visibility: visible;
-  transform: translateX(0);
+  transform: translateX(0) scale(1);
+}
+
+/* 按钮序列动画 */
+.link-item:hover .link-actions .action-btn:first-child {
+  transition-delay: 0.1s;
+}
+
+.link-item:hover .link-actions .action-btn:last-child {
+  transition-delay: 0.2s;
 }
 
 .add-link-item {
@@ -515,17 +633,39 @@ export default {
   border-radius: 8px;
   text-decoration: none;
   color: white;
-  transition: all 0.2s ease;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
   min-height: 80px;
   justify-content: center;
   text-align: center;
+  overflow: hidden;
+  backdrop-filter: blur(8px);
+}
+
+/* 紧凑布局闪光效果 */
+.nav-group.layout-compact .link-item-compact::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+  transition: left 0.3s ease;
+  z-index: 0;
+}
+
+.nav-group.layout-compact .link-item-compact:hover::before {
+  left: 100%;
 }
 
 .nav-group.layout-compact .link-item-compact:hover {
   background: rgba(255, 255, 255, 0.1);
   border-color: rgba(255, 255, 255, 0.2);
-  transform: translateY(-2px);
+  transform: translateY(-3px) scale(1.05);
+  box-shadow: 
+    0 8px 20px rgba(0, 0, 0, 0.15),
+    0 0 15px rgba(255, 255, 255, 0.1);
 }
 
 .nav-group.layout-compact .link-icon-compact {
@@ -539,6 +679,15 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
+  transition: all 0.3s ease;
+  position: relative;
+  z-index: 1;
+}
+
+.nav-group.layout-compact .link-item-compact:hover .link-icon-compact {
+  transform: scale(1.2) rotate(10deg);
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.3);
 }
 
 .nav-group.layout-compact .link-icon-compact img {
@@ -556,6 +705,14 @@ export default {
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
+  transition: all 0.3s ease;
+  position: relative;
+  z-index: 1;
+}
+
+.nav-group.layout-compact .link-item-compact:hover .link-name-compact {
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.4), 0 0 6px rgba(255, 255, 255, 0.2);
+  color: #fff;
 }
 
 .nav-group.layout-compact .link-actions-compact {

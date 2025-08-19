@@ -2,8 +2,37 @@
   <div id="app">
     <!-- 全屏风景背景 -->
     <div :class="`background-animation ${currentBackground} ${displayMode}`">
+      <!-- 增强的浮动几何图形 -->
+      <div class="floating-shapes">
+        <div class="shape shape-1"></div>
+        <div class="shape shape-2"></div>
+        <div class="shape shape-3"></div>
+        <div class="shape shape-4"></div>
+        <div class="shape shape-5"></div>
+        <div class="shape shape-6"></div>
+      </div>
+      
+      <!-- 动态光线效果 -->
+      <div class="light-rays">
+        <div class="light-ray"></div>
+        <div class="light-ray"></div>
+        <div class="light-ray"></div>
+        <div class="light-ray"></div>
+        <div class="light-ray"></div>
+      </div>
+      
+      <!-- 漂浮的能量球 -->
+      <div class="energy-orbs">
+        <div class="energy-orb"></div>
+        <div class="energy-orb"></div>
+        <div class="energy-orb"></div>
+      </div>
+      
       <!-- 轻微粒子效果 -->
       <div class="particles">
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
         <div class="particle"></div>
         <div class="particle"></div>
         <div class="particle"></div>
