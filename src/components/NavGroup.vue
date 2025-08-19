@@ -111,77 +111,6 @@ export default {
   transform: translateY(-4px);
 }
 
-/* 移动端优化 */
-@media (max-width: 768px) {
-  .nav-group {
-    padding: 1rem;
-    margin-bottom: 0.75rem;
-  }
-  
-  .group-header {
-    margin-bottom: 0.75rem;
-    padding-bottom: 0.5rem;
-  }
-  
-  .group-title {
-    font-size: 1rem;
-  }
-  
-  .group-description {
-    font-size: 0.8rem;
-  }
-  
-  .group-actions {
-    gap: 0.375rem;
-  }
-  
-  .action-btn {
-    width: 28px !important;
-    height: 28px !important;
-    padding: 0.25rem !important;
-  }
-  
-  .links-list {
-    gap: 0.5rem;
-  }
-  
-  .link-item {
-    padding: 0.75rem;
-  }
-  
-  .link-content {
-    gap: 0.75rem;
-  }
-  
-  .link-icon {
-    width: 20px;
-    height: 20px;
-  }
-  
-  .link-info h3 {
-    font-size: 0.9rem;
-  }
-  
-  .link-info p {
-    font-size: 0.75rem;
-  }
-  
-  .link-actions {
-    gap: 0.25rem;
-  }
-  
-  .link-actions .action-btn {
-    width: 24px !important;
-    height: 24px !important;
-    padding: 0.2rem !important;
-  }
-  
-  .add-link-btn {
-    padding: 0.75rem;
-    font-size: 0.8rem;
-  }
-}
-
 .group-header {
   display: flex;
   justify-content: space-between;
@@ -382,24 +311,124 @@ export default {
   font-weight: bold;
 }
 
+/* 移动端优化 */
 @media (max-width: 768px) {
-  .group-header {
-    flex-direction: column;
-    gap: 1rem;
+  .nav-group {
+    padding: 1rem;
+    margin-bottom: 0.75rem;
   }
   
-  .group-actions {
-    align-self: flex-end;
+  .nav-group .group-header {
+    margin-bottom: 0.75rem;
+    padding-bottom: 0.5rem;
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: flex-start !important;
+    flex-direction: row !important;
   }
   
-  .link-content {
+  .nav-group .group-info {
+    flex: 1;
+    min-width: 0;
+  }
+  
+  .nav-group .group-title {
+    font-size: 1rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-bottom: 0.25rem;
+  }
+  
+  .nav-group .group-description {
+    font-size: 0.8rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    opacity: 0.8;
+  }
+  
+  .nav-group .group-actions {
+    gap: 0.375rem;
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+  }
+  
+  .nav-group .action-btn {
+    width: 28px !important;
+    height: 28px !important;
+    padding: 0.25rem !important;
+    flex-shrink: 0;
+  }
+  
+  .nav-group .links-grid {
+    gap: 0.5rem;
+    display: grid;
+  }
+  
+  .nav-group .link-item {
+    padding: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .nav-group .link-content {
+    gap: 0.75rem;
+    flex: 1;
+    display: flex;
+    align-items: center;
+    min-width: 0;
     padding: 0.75rem;
   }
   
-  .link-icon {
-    width: 28px;
-    height: 28px;
-    margin-right: 0.75rem;
+  .nav-group .link-icon {
+    width: 20px;
+    height: 20px;
+    margin-right: 0.5rem;
+  }
+  
+  .nav-group .link-info {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+  }
+  
+  .nav-group .link-name {
+    font-size: 0.9rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-bottom: 0.25rem;
+  }
+  
+  .nav-group .link-description {
+    font-size: 0.75rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    opacity: 0.8;
+  }
+  
+  .nav-group .link-actions {
+    gap: 0.25rem;
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+    padding: 0.5rem;
+  }
+  
+  .nav-group .link-actions .action-btn {
+    width: 24px !important;
+    height: 24px !important;
+    padding: 0.2rem !important;
+    flex-shrink: 0;
+  }
+  
+  .nav-group .add-link-btn {
+    padding: 0.75rem;
+    font-size: 0.8rem;
   }
 }
 </style>
