@@ -1,5 +1,5 @@
 <template>
-  <div id="app">
+  <div id="app" :class="[`theme-${currentTheme}`]">
     <!-- 全屏风景背景 -->
     <div :class="`background-animation ${currentBackground} ${displayMode}`">
       <!-- 增强的浮动几何图形 -->
@@ -70,6 +70,22 @@
         
         <!-- 右侧搜索区域 -->
         <div class="search-section">
+          <!-- 主题切换按钮 -->
+          <div class="theme-switcher">
+            <button @click="toggleTheme" class="theme-btn" :title="themeTitle">
+              <svg v-if="currentTheme === 'light'" viewBox="0 0 24 24" width="18" height="18">
+                <path fill="currentColor" d="M12,18C11.11,18 10.26,17.8 9.5,17.45C11.56,16.5 13,14.42 13,12C13,9.58 11.56,7.5 9.5,6.55C10.26,6.2 11.11,6 12,6A6,6 0 0,1 18,12A6,6 0 0,1 12,18M20,8.69V4H15.31L12,0.69L8.69,4H4V8.69L0.69,12L4,15.31V20H8.69L12,23.31L15.31,20H20V15.31L23.31,12L20,8.69Z"/>
+              </svg>
+              <svg v-else viewBox="0 0 24 24" width="18" height="18">
+                <path fill="currentColor" d="M12,7A5,5 0 0,1 17,12A5,5 0 0,1 12,17A5,5 0 0,1 7,12A5,5 0 0,1 12,7M12,9A3,3 0 0,0 9,12A3,3 0 0,0 12,15A3,3 0 0,0 15,12A3,3 0 0,0 12,9M12,2L14.39,5.42C13.65,5.15 12.84,5 12,5C11.16,5 10.35,5.15 9.61,5.42L12,2M3.34,7L7.5,6.65C6.9,7.16 6.36,7.78 5.94,8.5C5.5,9.24 5.25,10 5.11,10.79L3.34,7M3.36,17L5.12,13.23C5.26,14 5.53,14.78 5.95,15.5C6.37,16.24 6.91,16.86 7.5,17.37L3.36,17M20.65,7L18.88,10.79C18.74,10 18.47,9.23 18.05,8.5C17.63,7.78 17.1,7.15 16.5,6.64L20.65,7M20.64,17L16.5,17.36C17.09,16.85 17.62,16.22 18.04,15.5C18.46,14.77 18.73,14 18.87,13.21L20.64,17M12,22L9.59,18.56C10.33,18.83 11.14,19 12,19C12.82,19 13.63,18.83 14.37,18.56L12,22Z"/>
+              </svg>
+              <!-- 自动模式图标暂时注释 -->
+              <!-- <svg v-else viewBox="0 0 24 24" width="18" height="18">
+                <path fill="currentColor" d="M12,2A10,10 0 0,1 22,12A10,10 0 0,1 12,22A10,10 0 0,1 2,12A10,10 0 0,1 12,2M12,4A8,8 0 0,0 4,12A8,8 0 0,0 12,20A8,8 0 0,0 20,12A8,8 0 0,0 12,4M12,6A6,6 0 0,1 18,12A6,6 0 0,1 12,18V6Z"/>
+              </svg> -->
+            </button>
+          </div>
+          
           <div class="search-container">
             <button @click="toggleSearchEngine" class="search-engine-icon left-icon" :title="searchEngineTitle">
               <!-- 百度图标 -->
@@ -148,6 +164,13 @@
             @add-link="addLink"
             @edit-link="editLink"
             @delete-link="deleteLink"
+            @group-drag-start="handleGroupDragStart"
+            @group-drag-end="handleGroupDragEnd"
+            @group-drag-over="handleGroupDragOver"
+            @group-drop="handleGroupDrop"
+            @link-drag-start="handleLinkDragStart"
+            @link-drag-end="handleLinkDragEnd"
+            @link-drop="handleLinkDrop"
           />
           
           <!-- 只在没有搜索或有搜索结果时显示添加分组卡片 -->
@@ -268,6 +291,7 @@ export default {
       currentDate: '',
       searchEngine: 'baidu', // 'baidu' 或 'google'
       currentLayout: 'grid', // 当前布局模式
+      currentTheme: 'light', // 'light', 'dark', 'auto'
       layoutOptions: [
         {
           value: 'grid',
@@ -314,12 +338,30 @@ export default {
     },
     searchEngineTitle() {
       return this.searchEngine === 'baidu' ? '当前：百度搜索，点击切换到Google' : '当前：Google搜索，点击切换到百度'
+    },
+    themeTitle() {
+      const themeMap = {
+        light: '当前：浅色模式，点击切换到深色模式',
+        dark: '当前：深色模式，点击切换到浅色模式'
+        // auto: '当前：自动模式，点击切换到浅色模式' // 暂时注释
+      }
+      return themeMap[this.currentTheme]
     }
   },
   mounted() {
     this.loadData()
     this.updateTime()
     setInterval(this.updateTime, 1000)
+    
+    // 应用主题
+    this.applyTheme()
+    
+    // 监听系统主题变化（自动模式下）- 暂时注释
+    // window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
+    //   if (this.currentTheme === 'auto') {
+    //     this.applyTheme()
+    //   }
+    // })
     
     // 检查是否首次访问，显示欢迎弹窗
     this.checkFirstVisit()
@@ -429,7 +471,8 @@ export default {
         currentBackground: this.currentBackground,
         displayMode: this.displayMode,
         searchEngine: this.searchEngine,
-        currentLayout: this.currentLayout
+        currentLayout: this.currentLayout,
+        currentTheme: this.currentTheme
       }))
     },
     
@@ -444,6 +487,12 @@ export default {
         this.displayMode = data.displayMode || this.displayMode
         this.searchEngine = data.searchEngine || this.searchEngine
         this.currentLayout = data.currentLayout || this.currentLayout
+        // 如果保存的主题是auto，重置为light（因为暂时注释掉自动模式）
+        let savedTheme = data.currentTheme || this.currentTheme
+        if (savedTheme === 'auto') {
+          savedTheme = 'light'
+        }
+        this.currentTheme = savedTheme
       }
     },
     
@@ -559,6 +608,39 @@ export default {
       this.saveData()
     },
 
+    // 主题切换（暂时注释掉自动模式）
+    toggleTheme() {
+      const themes = ['light', 'dark'] // 'auto' 暂时注释
+      const currentIndex = themes.indexOf(this.currentTheme)
+      const nextIndex = (currentIndex + 1) % themes.length
+      this.currentTheme = themes[nextIndex]
+      this.applyTheme()
+      this.saveData()
+    },
+
+    applyTheme() {
+      const html = document.documentElement
+      
+      // 移除所有主题类
+      html.classList.remove('theme-light', 'theme-dark', 'theme-auto')
+      
+      // 暂时注释掉自动模式
+      // if (this.currentTheme === 'auto') {
+      //   // 自动模式：根据系统偏好设置
+      //   const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches
+      //   html.classList.add('theme-auto')
+      //   html.setAttribute('data-theme', prefersDark ? 'dark' : 'light')
+      // } else {
+      //   // 手动模式
+      //   html.classList.add(`theme-${this.currentTheme}`)
+      //   html.setAttribute('data-theme', this.currentTheme)
+      // }
+      
+      // 简化为只支持浅色和深色模式
+      html.classList.add(`theme-${this.currentTheme}`)
+      html.setAttribute('data-theme', this.currentTheme)
+    },
+
     // 检查首次访问
     checkFirstVisit() {
       const hasVisited = localStorage.getItem('chromNav_hasVisited')
@@ -595,6 +677,127 @@ export default {
           }
         }, 300)
       })
+    },
+
+    // 拖拽排序相关方法
+    handleGroupDragStart(event, groupId) {
+      event.dataTransfer.setData('text/plain', JSON.stringify({ type: 'group', id: groupId }))
+      event.dataTransfer.effectAllowed = 'move'
+      // 添加拖拽样式
+      event.target.classList.add('dragging')
+      document.body.classList.add('dragging-active')
+    },
+
+    handleGroupDragEnd(event) {
+      event.target.classList.remove('dragging')
+      document.body.classList.remove('dragging-active')
+      // 移除所有拖拽over状态
+      document.querySelectorAll('.drag-over').forEach(el => {
+        el.classList.remove('drag-over')
+      })
+    },
+
+    handleGroupDragOver(event) {
+      event.preventDefault()
+      event.dataTransfer.dropEffect = 'move'
+      
+      // 添加视觉反馈
+      const target = event.currentTarget
+      if (!target.classList.contains('dragging')) {
+        target.classList.add('drag-over')
+      }
+    },
+
+    handleGroupDrop(event, targetGroupId) {
+      event.preventDefault()
+      
+      // 移除视觉反馈
+      event.currentTarget.classList.remove('drag-over')
+      
+      try {
+        const dragData = JSON.parse(event.dataTransfer.getData('text/plain'))
+        
+        if (dragData.type === 'group' && dragData.id !== targetGroupId) {
+          const sourceIndex = this.linkGroups.findIndex(g => g.id === dragData.id)
+          const targetIndex = this.linkGroups.findIndex(g => g.id === targetGroupId)
+          
+          if (sourceIndex !== -1 && targetIndex !== -1) {
+            // 移动分组
+            const sourceGroup = this.linkGroups.splice(sourceIndex, 1)[0]
+            this.linkGroups.splice(targetIndex, 0, sourceGroup)
+            this.saveData()
+            
+            // 显示成功提示
+            this.$nextTick(() => {
+              const movedGroup = this.$el.querySelector(`[data-group-id="${dragData.id}"]`)
+              if (movedGroup) {
+                movedGroup.style.animation = 'bounce 0.5s ease'
+                setTimeout(() => {
+                  movedGroup.style.animation = ''
+                }, 500)
+              }
+            })
+          }
+        }
+      } catch (error) {
+        console.error('拖拽排序失败:', error)
+      }
+    },
+
+    handleLinkDragStart(event, groupId, linkId) {
+      event.dataTransfer.setData('text/plain', JSON.stringify({ 
+        type: 'link', 
+        groupId: groupId, 
+        linkId: linkId 
+      }))
+      event.dataTransfer.effectAllowed = 'move'
+      event.target.classList.add('dragging')
+      document.body.classList.add('dragging-active')
+    },
+
+    handleLinkDragEnd(event) {
+      event.target.classList.remove('dragging')
+      document.body.classList.remove('dragging-active')
+      // 移除所有拖拽over状态
+      document.querySelectorAll('.drag-over').forEach(el => {
+        el.classList.remove('drag-over')
+      })
+    },
+
+    handleLinkDrop(event, targetGroupId, targetLinkId = null) {
+      event.preventDefault()
+      
+      try {
+        const dragData = JSON.parse(event.dataTransfer.getData('text/plain'))
+        
+        if (dragData.type === 'link') {
+          const sourceGroup = this.linkGroups.find(g => g.id === dragData.groupId)
+          const targetGroup = this.linkGroups.find(g => g.id === targetGroupId)
+          
+          if (sourceGroup && targetGroup) {
+            const sourceLink = sourceGroup.links.find(l => l.id === dragData.linkId)
+            
+            if (sourceLink) {
+              // 从源分组移除链接
+              sourceGroup.links = sourceGroup.links.filter(l => l.id !== dragData.linkId)
+              
+              // 添加到目标分组
+              if (targetLinkId) {
+                // 插入到指定位置
+                const targetIndex = targetGroup.links.findIndex(l => l.id === targetLinkId)
+                targetGroup.links.splice(targetIndex, 0, sourceLink)
+              } else {
+                // 添加到末尾
+                targetGroup.links.push(sourceLink)
+              }
+              
+              this.saveData()
+            }
+          }
+        }
+      } catch (error) {
+        console.error('链接拖拽排序失败:', error)
+      }
     }
   }
 }

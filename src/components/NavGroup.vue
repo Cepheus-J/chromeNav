@@ -1,5 +1,13 @@
 <template>
-  <div :class="['nav-group', `layout-${layout}`]">
+  <div 
+    :class="['nav-group', `layout-${layout}`]"
+    :data-group-id="group.id"
+    draggable="true"
+    @dragstart="handleGroupDragStart"
+    @dragend="handleGroupDragEnd"
+    @dragover="handleGroupDragOver"
+    @drop="handleGroupDrop"
+  >
     <div class="group-header">
       <div class="group-info">
         <h3 class="group-title">{{ group.name }}</h3>
@@ -25,6 +33,11 @@
         v-for="link in group.links" 
         :key="link.id"
         class="link-item"
+        draggable="true"
+        @dragstart="handleLinkDragStart($event, link.id)"
+        @dragend="handleLinkDragEnd"
+        @dragover="handleLinkDragOver"
+        @drop="handleLinkDrop($event, link.id)"
       >
         <a 
           :href="link.url" 
@@ -77,6 +90,11 @@
           rel="noopener noreferrer"
           class="link-item-compact"
           :title="`${link.name} - ${link.description}`"
+          draggable="true"
+          @dragstart="handleLinkDragStart($event, link.id)"
+          @dragend="handleLinkDragEnd"
+          @dragover="handleLinkDragOver"
+          @drop="handleLinkDrop($event, link.id)"
         >
           <div class="link-icon-compact">
             <img 
@@ -121,7 +139,11 @@ export default {
       default: 'grid'
     }
   },
-  emits: ['edit-group', 'delete-group', 'add-link', 'edit-link', 'delete-link'],
+  emits: [
+    'edit-group', 'delete-group', 'add-link', 'edit-link', 'delete-link',
+    'group-drag-start', 'group-drag-end', 'group-drag-over', 'group-drop',
+    'link-drag-start', 'link-drag-end', 'link-drop'
+  ],
   methods: {
     getDomain(url) {
       try {
@@ -133,6 +155,61 @@ export default {
     
     handleIconError(event) {
       event.target.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTEyIDJMMTMuMDkgOC4yNkwyMCA5TDEzLjA5IDE1Ljc0TDEyIDIyTDEwLjkxIDE1Ljc0TDQgOUwxMC45MSA4LjI2TDEyIDJaIiBmaWxsPSIjOTk5IiBzdHJva2U9IiM5OTkiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+Cjwvc3ZnPgo='
+    },
+
+    // 分组拖拽处理
+    handleGroupDragStart(event) {
+      this.$emit('group-drag-start', event, this.group.id)
+    },
+
+    handleGroupDragEnd(event) {
+      this.$emit('group-drag-end', event)
+    },
+
+    handleGroupDragOver(event) {
+      this.$emit('group-drag-over', event)
+    },
+
+    handleGroupDrop(event) {
+      this.$emit('group-drop', event, this.group.id)
+    },
+
+    // 链接拖拽处理
+    handleLinkDragStart(event, linkId) {
+      event.stopPropagation() // 防止触发分组拖拽
+      event.target.classList.add('dragging')
+      this.$emit('link-drag-start', event, this.group.id, linkId)
+    },
+
+    handleLinkDragEnd(event) {
+      event.target.classList.remove('dragging')
+      // 移除所有拖拽over状态
+      document.querySelectorAll('.drag-over').forEach(el => {
+        el.classList.remove('drag-over')
+      })
+      this.$emit('link-drag-end', event)
+    },
+
+    handleLinkDragOver(event) {
+      event.preventDefault()
+      event.stopPropagation()
+      event.dataTransfer.dropEffect = 'move'
+      
+      // 添加视觉反馈
+      const target = event.currentTarget
+      if (!target.classList.contains('dragging')) {
+        target.classList.add('drag-over')
+      }
+    },
+
+    handleLinkDrop(event, targetLinkId) {
+      event.preventDefault()
+      event.stopPropagation()
+      
+      // 移除视觉反馈
+      event.currentTarget.classList.remove('drag-over')
+      
+      this.$emit('link-drop', event, this.group.id, targetLinkId)
     }
   }
 }
@@ -140,15 +217,108 @@ export default {
 
 <style scoped>
 .nav-group {
-  background: rgba(255, 255, 255, 0.15);
+  background: var(--bg-glass);
   backdrop-filter: blur(20px);
-  border-radius: 16px;
+  border-radius: 18px;
   border: 1px solid rgba(255, 255, 255, 0.2);
   padding: 1.5rem;
-  transition: all 0.3s ease;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: var(--shadow-lg);
   position: relative;
   overflow: hidden;
+  animation: slideInUp 0.6s ease-out forwards;
+  opacity: 0;
+  transform: translateY(30px);
+}
+
+/* 浅色主题下的卡片样式 - 超透明风格 */
+[data-theme="light"] .nav-group {
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(20px) saturate(1.8);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  box-shadow: 
+    0 8px 32px rgba(0, 0, 0, 0.04),
+    0 1px 0 rgba(255, 255, 255, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.4);
+}
+
+[data-theme="light"] .nav-group:hover {
+  background: rgba(255, 255, 255, 0.25);
+  border-color: rgba(255, 255, 255, 0.35);
+  box-shadow: 
+    0 12px 40px rgba(0, 0, 0, 0.06),
+    0 1px 0 rgba(255, 255, 255, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.5);
+}
+
+/* 浅色主题下的文本颜色 */
+[data-theme="light"] .nav-group .group-title {
+  color: rgba(0, 0, 0, 0.9);
+  text-shadow: 0 1px 2px rgba(255, 255, 255, 0.8);
+}
+
+[data-theme="light"] .nav-group .group-description {
+  color: rgba(0, 0, 0, 0.6);
+  text-shadow: 0 1px 2px rgba(255, 255, 255, 0.6);
+}
+
+[data-theme="light"] .nav-group .link-name {
+  color: rgba(0, 0, 0, 0.9);
+  text-shadow: 0 1px 2px rgba(255, 255, 255, 0.8);
+}
+
+[data-theme="light"] .nav-group .link-description {
+  color: rgba(0, 0, 0, 0.6);
+  text-shadow: 0 1px 2px rgba(255, 255, 255, 0.6);
+}
+
+[data-theme="light"] .nav-group .add-link-btn {
+  color: rgba(0, 0, 0, 0.7);
+  text-shadow: 0 1px 2px rgba(255, 255, 255, 0.6);
+}
+
+[data-theme="light"] .nav-group .add-link-item:hover .add-link-btn {
+  color: rgba(0, 0, 0, 0.9);
+}
+
+/* 浅色主题下的链接项样式 - 极简透明 */
+[data-theme="light"] .nav-group .link-item {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(8px) saturate(1.5);
+}
+
+[data-theme="light"] .nav-group .link-item:hover {
+  background: rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.3);
+  box-shadow: 
+    0 8px 25px rgba(0, 0, 0, 0.04),
+    0 0 20px rgba(255, 255, 255, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+
+[data-theme="light"] .nav-group .link-item:hover .link-name {
+  color: rgba(0, 0, 0, 0.95);
+  text-shadow: 
+    0 1px 2px rgba(255, 255, 255, 0.9),
+    0 0 8px rgba(255, 255, 255, 0.6);
+}
+
+[data-theme="light"] .nav-group .add-link-item {
+  border: 1px dashed rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+[data-theme="light"] .nav-group .add-link-item:hover {
+  border-color: rgba(255, 255, 255, 0.4);
+  background: rgba(255, 255, 255, 0.15);
+}
+
+/* 深色主题下的卡片样式 */
+[data-theme="dark"] .nav-group {
+  background: var(--bg-glass);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
 }
 
 /* 添加闪光效果 */
@@ -175,11 +345,75 @@ export default {
 }
 
 .nav-group:hover {
-  background: rgba(255, 255, 255, 0.25);
+  background: var(--bg-glass-hover);
   border-color: rgba(255, 255, 255, 0.3);
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+  box-shadow: var(--shadow-xl);
   transform: translateY(-4px);
 }
+
+[data-theme="dark"] .nav-group:hover {
+  background: var(--bg-glass-hover);
+  border-color: rgba(255, 255, 255, 0.15);
+}
+
+/* 拖拽状态样式 */
+.nav-group.dragging {
+  opacity: 0.6;
+  transform: rotate(2deg) scale(0.95);
+  z-index: 1000;
+}
+
+.nav-group.drag-over {
+  border-color: #3b82f6;
+  background: rgba(59, 130, 246, 0.1);
+  transform: scale(1.02);
+}
+
+.link-item.dragging {
+  opacity: 0.6;
+  transform: rotate(1deg) scale(0.95);
+  z-index: 1000;
+}
+
+.link-item.drag-over {
+  background: rgba(59, 130, 246, 0.1);
+  border-color: #3b82f6;
+}
+
+.link-item-compact.dragging {
+  opacity: 0.6;
+  transform: scale(0.95);
+  z-index: 1000;
+}
+
+.link-item-compact.drag-over {
+  background: rgba(59, 130, 246, 0.1) !important;
+  border-color: #3b82f6 !important;
+}
+
+/* 入场动画 */
+@keyframes slideInUp {
+  0% {
+    opacity: 0;
+    transform: translateY(30px) scale(0.95);
+  }
+  60% {
+    opacity: 0.8;
+    transform: translateY(-5px) scale(1.02);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* 为不同位置的卡片添加延迟 */
+.nav-group:nth-child(1) { animation-delay: 0.1s; }
+.nav-group:nth-child(2) { animation-delay: 0.2s; }
+.nav-group:nth-child(3) { animation-delay: 0.3s; }
+.nav-group:nth-child(4) { animation-delay: 0.4s; }
+.nav-group:nth-child(5) { animation-delay: 0.5s; }
+.nav-group:nth-child(6) { animation-delay: 0.6s; }
 
 .group-header {
   display: flex;
@@ -196,7 +430,7 @@ export default {
 
 .group-title {
   color: white;
-  font-size: 1.1rem;
+  font-size: 1rem;
   font-weight: 600;
   margin-bottom: 0.25rem;
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
@@ -204,7 +438,7 @@ export default {
 
 .group-description {
   color: rgba(255, 255, 255, 0.8);
-  font-size: 0.875rem;
+  font-size: 0.8rem;
   line-height: 1.4;
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
 }
@@ -335,15 +569,15 @@ export default {
   flex: 1;
   display: flex;
   align-items: center;
-  padding: 0.75rem;
+  padding: 0.625rem;
   text-decoration: none;
   color: white;
 }
 
 .link-icon {
-  width: 32px;
-  height: 32px;
-  margin-right: 0.75rem;
+  width: 28px;
+  height: 28px;
+  margin-right: 0.625rem;
   border-radius: 8px;
   overflow: hidden;
   background: rgba(255, 255, 255, 0.2);
@@ -383,8 +617,8 @@ export default {
 }
 
 .link-item:hover .link-icon img {
-  transform: scale(1.1) rotate(5deg);
-  filter: brightness(1.2);
+  transform: scale(1.15) rotate(8deg);
+  filter: brightness(1.3) saturate(1.2);
 }
 
 .link-info {
@@ -392,7 +626,7 @@ export default {
 }
 
 .link-name {
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   font-weight: 500;
   margin-bottom: 0.125rem;
   color: white;
@@ -403,11 +637,15 @@ export default {
 
 .link-item:hover .link-name {
   color: #fff;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.4), 0 0 8px rgba(255, 255, 255, 0.3);
+  text-shadow: 
+    0 2px 4px rgba(0, 0, 0, 0.4), 
+    0 0 12px rgba(255, 255, 255, 0.4),
+    0 0 20px rgba(59, 130, 246, 0.3);
+  transform: translateX(2px);
 }
 
 .link-description {
-  font-size: 0.75rem;
+  font-size: 0.7rem;
   color: rgba(255, 255, 255, 0.7);
   line-height: 1.3;
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
