@@ -236,6 +236,7 @@ body.dragging-active * {
   height: 100%;
   z-index: 1;
   pointer-events: none;
+  display: none; /* 禁用浮动几何图形 */
 }
 
 /* 新增：动态光线效果 */
@@ -246,6 +247,7 @@ body.dragging-active * {
   overflow: hidden;
   pointer-events: none;
   z-index: 1;
+  display: none; /* 禁用光线效果 */
 }
 
 .light-ray {
@@ -287,6 +289,7 @@ body.dragging-active * {
   height: 100%;
   pointer-events: none;
   z-index: 1;
+  display: none; /* 禁用能量球效果 */
 }
 
 .energy-orb {
@@ -464,6 +467,7 @@ body.dragging-active * {
   height: 100%;
   z-index: 1;
   pointer-events: none;
+  display: none; /* 禁用粒子效果 */
 }
 
 .particle {
@@ -2514,9 +2518,10 @@ body.dragging-active * {
     radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.1) 0%, transparent 50%),
     radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.1) 0%, transparent 50%),
     radial-gradient(circle at 40% 40%, rgba(120, 219, 255, 0.1) 0%, transparent 50%);
-  animation: color-shift 10s ease-in-out infinite;
+  animation: none; /* 禁用背景颜色动画 */
   z-index: 2;
   pointer-events: none;
+  display: none; /* 完全隐藏背景覆盖层 */
 }
 
 /* 增强粒子效果 */
